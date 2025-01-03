@@ -55,7 +55,7 @@ public class EmailService : IEmailService
 			.Replace("{{name}}", name)
 			.Replace("{{year}}", DateTime.Now.Year.ToString());
 		
-		await SendEmailAsync(to, "Welcome to Our Platform!", htmlBody);
+		await SendEmailAsync(to, "Welcome to Silent Words!", htmlBody);
 	}
 
 	public async Task SendOtpEmailAsync(string to, string otp, string purpose)
@@ -106,11 +106,11 @@ public class EmailService : IEmailService
 			<body>
 				<div class='container'>
 					<div class='header'>
-						<h1>Your Platform Name</h1>
+						<h1>Silent Words</h1>
 					</div>
 					{content}
 					<div class='footer'>
-						<p>&copy; {DateTime.Now.Year} Your Platform Name. All rights reserved.</p>
+						<p>&copy; {DateTime.Now.Year} Silent Words. All rights reserved.</p>
 						<p>This is an automated message, please do not reply to this email.</p>
 					</div>
 				</div>
@@ -126,7 +126,7 @@ public class EmailService : IEmailService
 				return @"
 					<div style='padding: 20px;'>
 						<h2>Welcome {{name}}! 🎉</h2>
-						<p>We're excited to have you join our platform.</p>
+						<p>We're excited to have you join to Silent Words.</p>
 						<p>Here's what you can do next:</p>
 						<ul>
 							<li>Complete your profile</li>
