@@ -3,76 +3,61 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	public class UserController(IUserRepository _userRepository) : ControllerBase
+	public class UserController : ControllerBase
 	{
-		[Authorize]
-		[HttpGet]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+		private readonly IUserRepository _userRepository;
+
+		public UserController(IUserRepository userRepository)
 		{
-			var users = await _userRepository.GetAllAsync();
-			return Ok(users);
+			_userRepository = userRepository;
 		}
 
 		[Authorize]
-		[HttpGet("{id}")]
+		[HttpGet("profile")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<User>> GetUserById(Guid id)
+		public async Task<ActionResult<User>> GetCurrentUser()
 		{
-			var user = await _userRepository.GetByIdAsync(id);
-			if (user == null)
-			{
-				return NotFound();
-			}
-			return Ok(user);
-		}
+			var email = User.FindFirst(ClaimTypes.Email)?.Value;
+			if (string.IsNullOrEmpty(email))
+				return Unauthorized();
 
-		[Authorize]
-		[HttpGet("email/{email}")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<User>> GetUserByEmail(string email)
-		{
 			var user = await _userRepository.GetByEmailAsync(email);
 			if (user == null)
-			{
 				return NotFound();
-			}
+
 			return Ok(user);
 		}
 
 		[Authorize]
-		[HttpPut("{id}")]
+		[HttpPut("profile")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<ActionResult<User>> UpdateUser(Guid id, [FromBody] UpdateUserDto updateDto)
+		public async Task<ActionResult<User>> UpdateCurrentUser([FromBody] UpdateUserDto updateDto)
 		{
 			try
 			{
-				var user = await _userRepository.UpdateAsync(id, updateDto);
-				return Ok(user);
+				var email = User.FindFirst(ClaimTypes.Email)?.Value;
+				if (string.IsNullOrEmpty(email))
+					return Unauthorized();
+
+				var user = await _userRepository.GetByEmailAsync(email);
+				if (user == null)
+					return NotFound();
+
+				var updatedUser = await _userRepository.UpdateAsync(user.Id, updateDto);
+				return Ok(updatedUser);
 			}
 			catch (Exception ex)
 			{
 				return BadRequest(new { message = ex.Message });
 			}
-		}
-
-		[Authorize]
-		[HttpDelete("{id}")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> DeleteUser(Guid id)
-		{
-			await _userRepository.DeleteAsync(id);
-			return NoContent();
 		}
 	}
 }
