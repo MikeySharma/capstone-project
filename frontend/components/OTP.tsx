@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { authService } from '@/services/authService';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie'
+import { AuthCard } from './shared/AuthCard';
 
 export default function OTP() {
   const router = useRouter();
@@ -36,51 +37,45 @@ export default function OTP() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Verify Your Email
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Enter the OTP sent to your email
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <input
-                type="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Enter OTP"
-                value={formData.otp}
-                onChange={(e) => setFormData({...formData, otp: e.target.value})}
-              />
-            </div>
+    <AuthCard>
+      <div className="max-w-md mx-auto">
+        <h1 className="text-3xl font-bold mb-2">Verify Your Email</h1>
+        <p className="text-gray-600 mb-8">
+          We've sent a verification code to your email address
+        </p>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              type="email"
+              required
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              placeholder="Email address"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+          </div>
+          
+          <div>
+            <input
+              type="text"
+              required
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              placeholder="Enter verification code"
+              value={formData.otp}
+              onChange={(e) => setFormData({...formData, otp: e.target.value})}
+            />
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              {loading ? 'Verifying...' : 'Verify OTP'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300"
+          >
+            {loading ? 'Verifying...' : 'Verify Email'}
+          </button>
         </form>
       </div>
-    </div>
+    </AuthCard>
   );
 }
