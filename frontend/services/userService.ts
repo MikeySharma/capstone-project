@@ -1,8 +1,9 @@
+import { getCookie } from '@/app/utils/cookieHandle';
 import { API_BASE_URL } from '../config';
 
 export const userService = {
   async getProfile() {
-    const token = localStorage.getItem('token');
+    const token = getCookie('token');
     const response = await fetch(`${API_BASE_URL}/api/User/profile`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -17,7 +18,7 @@ export const userService = {
   },
 
   async updateProfile(data: any) {
-    const token = localStorage.getItem('token');
+    const token = getCookie('token');
     const response = await fetch(`${API_BASE_URL}/api/User/profile`, {
       method: 'PUT',
       headers: {
@@ -35,3 +36,4 @@ export const userService = {
     return response.json();
   },
 }; 
+

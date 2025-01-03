@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "SilentWord",
@@ -27,14 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <link rel="icon" href="/favicon.ico" />
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
-      >
-        {children}
-        <ToastContainer position="top-right" autoClose={5000} />
-      </body>
-    </html>
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
+
   );
 }

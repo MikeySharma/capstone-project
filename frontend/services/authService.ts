@@ -1,3 +1,5 @@
+// 'use server'
+import { deleteCookie, getCookie } from '@/app/utils/cookieHandle';
 import { API_BASE_URL } from '../config';
 
 export interface RegisterData {
@@ -87,6 +89,12 @@ export const authService = {
   },
 
   logout() {
-    localStorage.removeItem('token');
+    deleteCookie('token');
   }
 }; 
+
+export const isLoggedIn = async () => {
+  const token = getCookie('token');
+
+  return !!token;
+}

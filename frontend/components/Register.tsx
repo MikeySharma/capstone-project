@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { authService } from '@/services/authService';
 import { toast } from 'react-toastify';
 import { AuthCard } from './shared/AuthCard';
+import Image from 'next/image';
 
 export default function Register() {
   const router = useRouter();
@@ -16,6 +17,10 @@ export default function Register() {
     phoneNumber: ''
   });
   const [loading, setLoading] = useState(false);
+  const [showPasswords, setShowPasswords] = useState({
+    password: false,
+    confirmPassword: false
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +29,7 @@ export default function Register() {
       return;
     }
     setLoading(true);
-    
+
     try {
       await authService.register(formData);
       toast.success('Registration successful! Please verify your email.');
@@ -41,7 +46,7 @@ export default function Register() {
       <div className="max-w-md mx-auto">
         <h1 className="text-3xl font-bold mb-2">Sign Up</h1>
         <p className="text-gray-600 mb-8">Create your account to get started</p>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
@@ -50,10 +55,10 @@ export default function Register() {
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="First Name"
               value={formData.fullName}
-              onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
             />
           </div>
-          
+
           <div>
             <input
               type="email"
@@ -61,42 +66,65 @@ export default function Register() {
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Email address"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
-          
-          <div>
+
+          <div className="relative">
             <input
-              type="password"
+              type={showPasswords.password ? "text" : "password"}
               required
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Password"
               value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPasswords({ ...showPasswords, password: !showPasswords.password })}
+            >
+              {showPasswords.password ? (
+                <Image src="/icons/HidePassword.png" alt="Hide Password" width={20} height={20} />
+              ) : (
+                <Image src="/icons/showPassword.png" alt="Show Password" width={20} height={20} />
+              )}
+            </button>
           </div>
-          
-          <div>
+
+          <div className="relative">
             <input
-              type="password"
+              type={showPasswords.confirmPassword ? "text" : "password"}
               required
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Confirm Password"
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
             />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPasswords({ ...showPasswords, confirmPassword: !showPasswords.confirmPassword })}
+            >
+              {showPasswords.confirmPassword ? (
+                <Image src="/icons/HidePassword.png" alt="Hide Password" width={20} height={20} />
+              ) : (
+                <Image src="/icons/showPassword.png" alt="Show Password" width={20} height={20} />
+              )}
+            </button>
           </div>
-          
+
+
           <div>
             <input
               type="tel"
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Phone Number (optional)"
               value={formData.phoneNumber}
-              onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
             />
           </div>
-          
+
           <button
             type="submit"
             disabled={loading}

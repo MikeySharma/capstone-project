@@ -6,6 +6,7 @@ import { authService } from '@/services/authService';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie'
 import { AuthCard } from './shared/AuthCard';
+import Image from 'next/image';
 
 export default function Login() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Login() {
     password: '',
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,15 +56,26 @@ export default function Login() {
             />
           </div>
           
-          <div>
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
             />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <Image src="/icons/HidePassword.png" alt="Hide Password" width={20} height={20} />
+              ) : (
+                <Image src="/icons/showPassword.png" alt="Show Password" width={20} height={20} />
+              )}
+            </button>
           </div>
 
           <div className="flex justify-end">
