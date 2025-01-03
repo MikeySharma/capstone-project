@@ -4,11 +4,13 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class SignLearnController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -133,6 +135,15 @@ namespace Backend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // New endpoint to get all words
+        [HttpGet("words")]
+        public async Task<ActionResult<IEnumerable<string>>> GetAllWords()
+        {
+            return await _context.SignLearns
+                .Select(s => s.Word)
+                .ToListAsync();
         }
     }
 } 
