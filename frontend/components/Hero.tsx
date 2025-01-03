@@ -1,7 +1,17 @@
+"use client"
+
 import Link from 'next/link';
-import Image from 'next/image';
+import { useEffect, useRef } from 'react';
 
 export default function Hero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.5; // Set the fixed speed (1.5x in this case)
+    }
+  }, []);
+
   return (
     <section className="relative py-16">
       {/* Background Image with Gradient Overlay */}
@@ -32,16 +42,10 @@ export default function Hero() {
           </Link>
         </div>
         <div className=" flex justify-center  md:w-1/2">
-          <iframe
-            width="481"
-            height="855"
-            src="https://www.youtube.com/embed/9suMldWHsGc"
-            title="ASL Animation"
-            // frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
+          <video ref={videoRef} className='rounded-3xl shadow-2xl'  autoPlay loop muted width="300"  height={400}>
+            <source src="/handsing.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
     </section>
