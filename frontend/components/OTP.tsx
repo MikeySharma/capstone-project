@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/authService';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie'
 
 export default function OTP() {
   const router = useRouter();
@@ -17,9 +18,16 @@ export default function OTP() {
     setLoading(true);
     
     try {
-      await authService.verifyOtp(formData.email, formData.otp);
+      const response = await authService.verifyOtp(formData.email, formData.otp);
+      
+      Cookies.set('token', response.token, { secure: true, sameSite: 'strict' });
+      Cookies.set('user', JSON.stringify({
+        name: response.name,
+        email: response.email
+      }), { secure: true, sameSite: 'strict' });
+
       toast.success('Email verified successfully!');
-      router.push('/login');
+      router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Verification failed');
     } finally {

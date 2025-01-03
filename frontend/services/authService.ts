@@ -30,23 +30,26 @@ export const authService = {
     return response.json();
   },
 
-  async login(data: LoginData) {
-    const response = await fetch(`${API_BASE_URL}/api/Auth/Login`, {
+  async login(credentials: { email: string; password: string }) {
+    const response = await fetch(`${API_BASE_URL}/api/Auth/login`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(credentials)
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message);
+      throw new Error(error.message || 'Login failed');
     }
 
-    const { token } = await response.json();
-    localStorage.setItem('token', token);
-    return token;
+    const data = await response.json();
+    return {
+      token: data.token,
+      name: data.name,
+      email: data.email
+    };
   },
 
   async forgotPassword(email: string) {
@@ -67,7 +70,7 @@ export const authService = {
   },
 
   async verifyOtp(email: string, otp: string) {
-    const response = await fetch(`${API_BASE_URL}/api/Auth/VerifyOtp`, {
+    const response = await fetch(`${API_BASE_URL}/api/Auth/verify-otp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
