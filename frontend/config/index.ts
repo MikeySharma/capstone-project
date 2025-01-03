@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'https://localhost:7134'; 
+export const API_BASE_URL = 'https://semicolon.tryasp.net'; 

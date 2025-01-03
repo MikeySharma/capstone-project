@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { authService } from '@/services/authService';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie'
 
 export default function Login() {
   const router = useRouter();
@@ -18,7 +19,13 @@ export default function Login() {
     setLoading(true);
     
     try {
-      await authService.login(formData);
+      const response = await authService.login(formData);
+      
+      Cookies.set('token', response.token, { secure: true, sameSite: 'strict' });
+      Cookies.set('user', JSON.stringify({
+        name: response.name,
+        email: response.email
+      }), { secure: true, sameSite: 'strict' });
       toast.success('Login successful!');
       router.push('/dashboard');
     } catch (error: any) {
