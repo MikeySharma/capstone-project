@@ -60,7 +60,7 @@ namespace Backend.Controllers
                 if (!Directory.Exists(videoPath))
                     Directory.CreateDirectory(videoPath);
 
-                string uniqueFileName = $"{Guid.NewGuid()}_{signDto.Video.FileName}";
+                string uniqueFileName = signDto.Video.FileName;
                 string filePath = Path.Combine(videoPath, uniqueFileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
