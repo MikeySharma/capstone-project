@@ -5,4 +5,6 @@ public interface IAuthRepository
     Task<bool> ForgotPasswordAsync(string email);
     Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
     Task<bool> VerifyOtpAsync(VerifyOtpDto verifyOtpDto);
+    Task<bool> ResendOtpAsync(string email);
+    Task<bool> ValidateTokenAsync(string token);
 }

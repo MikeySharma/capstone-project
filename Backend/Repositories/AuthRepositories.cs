@@ -158,7 +158,6 @@ namespace Backend.Repositories
 
 			throw new Exception("Invalid or expired OTP");
 		}
-
 		private string GenerateJwtToken(User user)
 		{
 			var tokenHandler = new JwtSecurityTokenHandler();
@@ -178,6 +177,68 @@ namespace Backend.Repositories
 		}
 
 		private string GenerateOtp()
+		{
+			// Generate 6-digit OTP
+			Random random = new Random();
+			return random.Next(100000, 999999).ToString();
+		}
+
+		public async Task<bool> ResendOtpAsync(string email)
+		{
+			var user = await _context.Users
+				.FirstOrDefaultAsync(u => u.Email == email);
+
+			if (user == null)
+				throw new Exception("User not found");
+
+			// Generate new OTP
+			string otp = GenerateOTP();
+			user.PasswordResetToken = otp;
+			user.PasswordResetTokenExpiry = DateTime.UtcNow.AddMinutes(5);
+
+			await _context.SaveChangesAsync();
+
+			// Send email
+			try
+			{
+				await _emailService.SendEmailAsync(
+					email,
+					"New OTP Code",
+					$"Your new OTP is: {otp}. This code will expire in 5 minutes."
+				);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to send new OTP email");
+			}
+		}
+
+		public async Task<bool> ValidateTokenAsync(string token)
+		{
+			try
+			{
+				var tokenHandler = new JwtSecurityTokenHandler();
+				var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
+				tokenHandler.ValidateToken(token, new TokenValidationParameters
+				{
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = new SymmetricSecurityKey(key),
+					ValidateIssuer = false,
+					ValidateAudience = false,
+					ClockSkew = TimeSpan.Zero
+				}, out SecurityToken validatedToken);
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				return false;
+			}
+		}
+
+		private string GenerateOTP()
 		{
 			// Generate 6-digit OTP
 			Random random = new Random();
