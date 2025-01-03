@@ -96,5 +96,37 @@ namespace Backend.Controllers
 				return BadRequest(new { message = ex.Message });
 			}
 		}
+
+		[HttpPost("resend-otp")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<IActionResult> ResendOtp([FromBody] ForgotPasswordDto forgotPasswordDto)
+		{
+			try
+			{
+				var result = await _userService.ResendOtpAsync(forgotPasswordDto.Email);
+				return Ok(new { message = "OTP resent successfully." });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[HttpPost("validate-token")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<IActionResult> ValidateToken([FromBody] ValidateTokenDto validateTokenDto)
+		{
+			try
+			{
+				var result = await _userService.ValidateTokenAsync(validateTokenDto.Token);
+				return Ok(new { isValid = result });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
 	}
 }
