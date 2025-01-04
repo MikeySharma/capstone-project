@@ -1,11 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiEye, FiLock, FiCheck } from 'react-icons/fi';
 import { getCookie } from '@/app/utils/cookieHandle';
 import { useRouter } from 'next/navigation';
 import Loader from "../Loader";
 import Link from "next/link";
+import { toast } from 'react-toastify';
+import { API_BASE_URL } from '@/config';
+
+interface WordProgress {
+    currentWord: string;
+    completedWords: string[];
+}
 
 interface WordData {
     word: string;
@@ -19,19 +26,112 @@ export default function CoursesTable() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedWord, setSelectedWord] = useState<WordData | null>(null);
-    const [isVideoLoading, setIsVideoLoading] = useState(true);
+    const [wordProgress, setWordProgress] = useState<WordProgress | null>(null);
+    const [isCourseStarted, setIsCourseStarted] = useState(false);
+    const [isVideoLoading, setIsVideoLoading] = useState(false);
 
     useEffect(() => {
         const initializeData = async () => {
             await fetchWords();
-            // If we have words in courseData, fetch details for the first word
-            if (courseData.length > 0) {
-                await fetchSingleWord(courseData[0]);
-            }
+            await fetchProgress();
         };
 
         initializeData();
     }, []);
+
+    const fetchProgress = async () => {
+        try {
+            const token = getCookie('token');
+            if (!token) { 
+                router.push('/login');
+                return;
+            }
+
+            const response = await fetch(`${API_BASE_URL}/api/SignLearn/progress`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setWordProgress(data);
+                setIsCourseStarted(!!data.currentWord);
+                if (data.currentWord) {
+                    await fetchSingleWord(data.currentWord);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching progress:", error);
+        }
+    };
+
+    const startCourse = async () => {
+        try {
+            const token = getCookie('token');
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+
+            const response = await fetch(`${API_BASE_URL}/api/SignLearn/start`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                await fetchProgress();
+                toast.success("Course started successfully!");
+            } else {
+                const error = await response.text();
+                toast.error(error || "Failed to start course");
+            }
+        } catch (error) {
+            console.error("Error starting course:", error);
+            toast.error("Failed to start course");
+        }
+    };
+
+    const completeWord = async (word: string) => {
+        try {
+            const token = getCookie('token');
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+
+            const response = await fetch(`${API_BASE_URL}/api/SignLearn/complete`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ word })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                await fetchProgress();
+                toast.success("Word completed successfully!");
+                
+                if (data.isCompleted) {
+                    toast.success("Congratulations! You've completed all words!");
+                } else if (data.nextWord) {
+                    await fetchSingleWord(data.nextWord);
+                }
+            } else {
+                const error = await response.text();
+                toast.error(error || "Failed to complete word");
+            }
+        } catch (error) {
+            console.error("Error completing word:", error);
+            toast.error("Failed to complete word");
+        }
+    };
 
     const fetchWords = async () => {
         try {
@@ -41,7 +141,7 @@ export default function CoursesTable() {
                 return;
             }
 
-            const response = await fetch("https://semicolon.tryasp.net/api/SignLearn/words", {
+            const response = await fetch(`${API_BASE_URL}/api/SignLearn/words`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -60,9 +160,13 @@ export default function CoursesTable() {
             const wordsArray = Array.isArray(data) ? data : [];
             setCourseData(wordsArray);
 
-            // If we have words, fetch the first word's details
-            if (wordsArray.length > 0) {
-                await fetchSingleWord(wordsArray[0]);
+            // Only fetch first word if it's the current word or completed
+            if (wordsArray.length > 0 && wordProgress) {
+                const firstWord = wordsArray[0];
+                if (wordProgress.currentWord === firstWord || 
+                    wordProgress.completedWords.includes(firstWord)) {
+                    await fetchSingleWord(firstWord);
+                }
             }
         } catch (error) {
             console.error("Error fetching words:", error);
@@ -85,7 +189,7 @@ export default function CoursesTable() {
             }
             setSelectedWord(null);
 
-            const response = await fetch(`https://semicolon.tryasp.net/api/SignLearn/${word}`, {
+            const response = await fetch(`${API_BASE_URL}/api/SignLearn/${word}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -115,123 +219,161 @@ export default function CoursesTable() {
     }
 
     return (
-        <div className="space-y-6 min-h-screen p-4 ">
-            {/* Search Section */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-white/20">
+        <div className="space-y-8 min-h-screen p-6 lg:p-8 ">
+            {/* Search and Live Translator Section */}
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-6 bg-white/95 backdrop-blur-lg p-6 lg:p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.06)] border border-white/50">
                 <div className="relative w-full sm:max-w-md">
-                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Search words..."
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/90"
+                        className="w-full pl-12 pr-4 py-4 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 
+                                 bg-white/80 text-gray-700 transition-all duration-300 placeholder:text-gray-400"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="w-full sm:w-auto">
-                    <Link href="/live-translator" className="w-full block sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
-                        Live translator
-                    </Link>
-                </div>
+                <Link 
+                    href="/live-translator" 
+                    className="w-full sm:w-auto bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-8 py-4 rounded-xl 
+                             hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl 
+                             transform hover:-translate-y-1 font-semibold text-center border border-white/20"
+                >
+                    Live Translator
+                </Link>
             </div>
-
-            {/* Words List and Details */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* Words Column */}
-                <div className="lg:col-span-4 bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                        <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">Words</span>
-                        <div className="flex-1 h-[1px] bg-gradient-to-r from-blue-200 to-purple-200"></div>
-                    </h2>
-                    <div className="max-h-[40vh] lg:max-h-[90vh] overflow-y-auto rounded-xl bg-white/70 shadow-inner">
-                        {filteredData.map((item, index) => (
-                            <div
-                                key={index}
-                                className={`p-4 cursor-pointer transition-all duration-300 border-b border-gray-100 last:border-b-0 flex items-center gap-3 group ${
-                                    selectedWord?.word === item
-                                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
-                                        : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50'
-                                }`}
-                                onClick={() => fetchSingleWord(item)}
-                            >
-                                <span className={`text-lg ${
-                                    selectedWord?.word === item 
-                                        ? 'text-white'
-                                        : 'text-gray-700 group-hover:text-blue-600'
-                                }`}>{item}</span>
-                                <div className={`ml-auto opacity-0 group-hover:opacity-100 transition-opacity ${
-                                    selectedWord?.word === item ? 'opacity-100' : ''
-                                }`}>
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Word Details Column */}
-                <div className="lg:col-span-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-2xl border border-white/20 overflow-hidden">
-                    {selectedWord ? (
-                        <div>
-                            {/* Header Section */}
-                            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-3xl font-bold text-white">
-                                        {selectedWord.word}
-                                    </h2>
-                                    <button
-                                        onClick={() => {
-                                            const utterance = new SpeechSynthesisUtterance(selectedWord.word);
-                                            window.speechSynthesis.speak(utterance);
+            
+            {/* Words List and Details Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* Left Column: Progress + Words List */}
+                <div className="lg:col-span-4 space-y-8">
+                    {/* Course Progress Section - Only shown when course is started */}
+                    {isCourseStarted ? (
+                        <div className="bg-white/95 backdrop-blur-lg p-6 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.06)] border border-white/50">
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-4">
+                                Course Progress
+                            </h2>
+                            <div className="space-y-4">
+                                <p className="text-gray-600 text-lg">
+                                    <span className="font-semibold text-indigo-600">{wordProgress?.completedWords.length}</span> of{' '}
+                                    <span className="font-semibold text-indigo-600">{courseData.length}</span> words completed
+                                </p>
+                                <div className="w-full h-3 bg-gray-50 rounded-full overflow-hidden border border-gray-100">
+                                    <div 
+                                        className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full transition-all duration-500"
+                                        style={{ 
+                                            width: `${((wordProgress?.completedWords.length || 0) / courseData.length) * 100}%` 
                                         }}
-                                        className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 flex-shrink-0 text-white"
-                                        title="Listen to pronunciation"
-                                    >
-                                        🔊
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="p-6 space-y-8">
-                                {/* Description Card */}
-                                <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 shadow-md">
-                                    <h3 className="text-lg font-semibold text-blue-800 mb-3">Description</h3>
-                                    <p className="text-gray-700 leading-relaxed">
-                                        {selectedWord.description}
-                                    </p>
-                                </div>
-
-                                {/* Video Section */}
-                                <div>
-                                    <h3 className="text-lg font-semibold text-blue-800 mb-4">Hand Sign Demonstration</h3>
-                                    {isVideoLoading && selectedWord && (
-                                        <div className="flex justify-center p-8">
-                                            <Loader />
-                                        </div>
-                                    )}
-                                    <div className="rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-blue-100 to-purple-100 p-1">
-                                        <video
-                                            src={`https://semicolon.tryasp.net/videos/${selectedWord.videoName}`}
-                                            loop
-                                            muted
-                                            autoPlay
-                                            className={`w-full rounded-lg ${isVideoLoading ? 'hidden' : ''}`}
-                                            onLoadStart={() => setIsVideoLoading(true)}
-                                            onLoadedData={() => setIsVideoLoading(false)}
-                                            style={{ aspectRatio: '16/9' }}
-                                        />
-                                    </div>
+                                    />
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="flex items-center justify-center h-96">
-                            <div className="text-center">
-                                <Loader />
-                                <p className="mt-4 text-gray-500">Loading word details...</p>
+                        <div className="bg-white/95 backdrop-blur-lg p-6 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.06)] border border-white/50">
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-4">
+                                Start Learning
+                            </h2>
+                            <p className="text-gray-600 mb-6">Begin your sign language journey today!</p>
+                            <button
+                                onClick={startCourse}
+                                className="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-6 py-3 rounded-xl
+                                         hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 shadow-lg 
+                                         hover:shadow-xl transform hover:-translate-y-1 font-semibold
+                                         border border-white/20"
+                            >
+                                Start Course
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Words List */}
+                    <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.06)] border border-white/50 p-6">
+                        <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-6 pb-4
+                                     border-b border-gray-100">
+                            Words List
+                        </h2>
+                        <div className="max-h-[60vh] overflow-y-auto rounded-xl bg-gray-50/50 space-y-2 p-2">
+                            {filteredData.map((item, index) => {
+                                const isCompleted = wordProgress?.completedWords.includes(item);
+                                const isCurrent = wordProgress?.currentWord === item;
+                                const isLocked = !isCompleted && !isCurrent;
+                                
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`p-4 transition-all duration-300 border-b last:border-b-0 
+                                            flex justify-between items-center group rounded-xl
+                                            ${isLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}
+                                            ${selectedWord?.word === item
+                                                ? 'bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-600 shadow-md border border-indigo-100/50'
+                                                : 'hover:bg-white hover:shadow-sm border border-transparent'
+                                            }`}
+                                        onClick={() => !isLocked && fetchSingleWord(item)}
+                                    >
+                                        <span className="font-medium">{item}</span>
+                                        <div className="flex items-center gap-3">
+                                            {isCompleted ? (
+                                                <FiCheck className="text-green-500 w-5 h-5" />
+                                            ) : isCurrent ? (
+                                                <FiEye className="text-blue-500 w-5 h-5" />
+                                            ) : (
+                                                <FiLock className="text-gray-400 w-5 h-5" />
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Word Details - Right Column */}
+                <div className="lg:col-span-8 bg-white/95 backdrop-blur-lg rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.06)] border border-white/50 p-8">
+                    {selectedWord ? (
+                        <div className="space-y-8">
+                            <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+                                <h2 className="text-4xl font-bold break-words bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                                    {selectedWord.word}
+                                </h2>
+                                {wordProgress?.currentWord === selectedWord.word && (
+                                    <button
+                                        onClick={() => completeWord(selectedWord.word)}
+                                        className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-8 py-4 
+                                                 rounded-xl hover:from-emerald-600 hover:to-green-600 
+                                                 transition-all duration-300 shadow-lg hover:shadow-xl 
+                                                 transform hover:-translate-y-1 flex items-center gap-3 font-semibold
+                                                 border border-white/20"
+                                    >
+                                        <FiCheck className="w-5 h-5" />
+                                        Mark Complete
+                                    </button>
+                                )}
                             </div>
+                            <div className="bg-gradient-to-br from-gray-50 to-indigo-50/30 rounded-xl p-8 shadow-inner border border-white">
+                                <p className="text-gray-700 leading-relaxed text-lg">
+                                    <strong className="text-indigo-700">Description:</strong> {selectedWord.description}
+                                </p>
+                            </div>
+                            <div className="space-y-4">
+                                <strong className="text-indigo-700 text-lg block">Hand Sign Demonstration:</strong>
+                                {isVideoLoading && <Loader />}
+                                <div className="rounded-xl overflow-hidden shadow-xl border border-gray-100">
+                                    <video
+                                        src={`${API_BASE_URL}/videos/${selectedWord.videoName}`}
+                                        loop
+                                        muted
+                                        autoPlay
+                                        controls
+                                        className={`w-full rounded-xl ${isVideoLoading ? 'hidden' : ''}`}
+                                        onLoadStart={() => setIsVideoLoading(true)}
+                                        onLoadedData={() => setIsVideoLoading(false)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center text-gray-500 py-20">
+                            <p className="text-xl">Select a word to view its details and demonstration</p>
                         </div>
                     )}
                 </div>
