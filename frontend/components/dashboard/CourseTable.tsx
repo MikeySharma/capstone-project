@@ -142,7 +142,7 @@ export default function CoursesTable() {
                 {/* Words Column */}
                 <div className="lg:col-span-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-4">
                     <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Words</h2>
-                    <div className="max-h-[40vh] lg:max-h-[60vh] overflow-y-auto rounded-lg bg-white/50">
+                    <div className="max-h-[40vh] lg:max-h-[90vh] overflow-y-auto rounded-lg bg-white/50">
                         {filteredData.map((item, index) => (
                             <div
                                 key={index}
@@ -201,7 +201,7 @@ export default function CoursesTable() {
                         </div>
                     ) : (
                         <div className="text-center text-gray-500 py-10">
-                            Select a word to view details
+                            <Loader />
                         </div>
                     )}
                 </div>
