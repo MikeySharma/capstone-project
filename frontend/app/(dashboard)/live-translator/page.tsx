@@ -44,7 +44,7 @@ export default function VideoStream() {
     useEffect(() => {
         if (!isStreaming) return;
 
-        const socketInstance = io('http://localhost:5000');
+        const socketInstance = io('https://w60pz26x-5000.inc1.devtunnels.ms/');
         setSocket(socketInstance);
 
         socketInstance.on('connect', () => {

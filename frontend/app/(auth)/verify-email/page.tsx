@@ -1,11 +1,8 @@
-import OTP from '@/components/OTP';
-import { Metadata } from 'next';
+'use client'
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = {
-  title: 'Verify Email - SilentWord',
-  description: 'Verify your email address',
-};
+const DynamicOTP = dynamic(() => import('@/components/OTP'), { ssr: false });
 
 export default function OTPVerificationPage() {
-  return <OTP />;
+  return <DynamicOTP />;
 }
