@@ -13,4 +13,6 @@ public class User
     public bool IsEmailVerified { get; set; }
     public string? PasswordResetToken { get; set; }
     public DateTime? PasswordResetTokenExpiry { get; set; }
+    public string? CurrentWord { get; set; } = null;
+    public string? CompletedWords { get; set; } = "";
 }
