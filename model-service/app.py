@@ -11,8 +11,15 @@ from model import predict_hand_gesture
 
 # Initialize Flask and SocketIO
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:3000", "https://hackpractice.tryasp.net"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "https://hackpractice.tryasp.net"], async_mode='threading')
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
