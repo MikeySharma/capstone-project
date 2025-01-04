@@ -35,7 +35,7 @@ export default function Hero() {
             Interactive tutorials and video practice to master sign language at your pace.
           </p>
           <Link
-            href="#"
+            href="/login"
             className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold text-lg hover:bg-blue-100 transition duration-300"
           >
             Start Learning Now

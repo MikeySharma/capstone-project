@@ -5,6 +5,7 @@ import { FiSearch } from 'react-icons/fi';
 import { getCookie } from '@/app/utils/cookieHandle';
 import { useRouter } from 'next/navigation';
 import Loader from "../Loader";
+import Link from "next/link";
 
 interface WordData {
     word: string;
@@ -18,6 +19,7 @@ export default function CoursesTable() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedWord, setSelectedWord] = useState<WordData | null>(null);
+    const [isVideoLoading, setIsVideoLoading] = useState(true);
 
     useEffect(() => {
         fetchWords();
@@ -68,6 +70,7 @@ export default function CoursesTable() {
                 router.push('/login');
                 return;
             }
+            setSelectedWord(null);
 
             const response = await fetch(`https://semicolon.tryasp.net/api/SignLearn/${word}`, {
                 headers: {
@@ -95,13 +98,13 @@ export default function CoursesTable() {
     };
 
     if (loading) {
-        return <Loader />;  
+        return <Loader />;
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 h-screen">
             {/* Search Section */}
-            <div className="flex items-center bg-white p-4 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
                 <div className="relative w-full max-w-md">
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
@@ -112,6 +115,9 @@ export default function CoursesTable() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
+                <div >
+                    <Link href="/dashboard/LivePractice">  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">Live Practice</button>  </Link>
+                </div>
             </div>
 
             {/* Words List and Details */}
@@ -119,18 +125,18 @@ export default function CoursesTable() {
                 {/* Words Column */}
                 <div className="col-span-4 bg-white rounded-lg shadow-sm p-4">
                     <h2 className="text-xl font-semibold mb-4">Words</h2>
-                    <div className="space-y-2">
+                    <div className="max-h-[60vh] overflow-y-auto border rounded-lg">
                         {filteredData.map((item, index) => (
                             <div
                                 key={index}
-                                className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedWord?.word === item
+                                className={`p-3 cursor-pointer transition-colors border-b last:border-b-0 ${
+                                    selectedWord?.word === item
                                         ? 'bg-blue-50 text-blue-600'
                                         : 'hover:bg-gray-50'
-                                    }`}
+                                }`}
                                 onClick={() => fetchSingleWord(item)}
                             >
                                 <span>{item}</span>
-                                <hr />
                             </div>
                         ))}
                     </div>
@@ -158,12 +164,16 @@ export default function CoursesTable() {
                             </p>
                             <div>
                                 <strong>Hand Sign Demonstration:</strong>
+                                {isVideoLoading && selectedWord && <Loader />}
                                 <video
                                     src={`https://semicolon.tryasp.net/videos/${selectedWord.videoName}`}
-                                    controls
+                                    // controls
                                     loop
+                                    muted
                                     autoPlay
-                                    className="mt-2 w-full max-w-md rounded-lg"
+                                    className={`mt-2 w-full max-w-md rounded-lg ${isVideoLoading ? 'hidden' : ''}`}
+                                    onLoadStart={() => setIsVideoLoading(true)}
+                                    onLoadedData={() => setIsVideoLoading(false)}
                                 />
                             </div>
                         </div>

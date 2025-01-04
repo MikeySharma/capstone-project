@@ -1,10 +1,9 @@
-import Link from 'next/link';
 
 export default function DashboardPage({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Sidebar */}
-      <aside className="w-72 bg-white shadow-xl">
+      {/* <aside className="w-72 bg-white shadow-xl">
         <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600">
           <h1 className="text-2xl font-bold text-white tracking-tight">
             Dashboard
@@ -45,7 +44,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
             </li>
           </ul>
         </nav>
-      </aside>
+      </aside> */}
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">

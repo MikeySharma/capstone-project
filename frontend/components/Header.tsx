@@ -36,7 +36,14 @@ export default function Header() {
           <Link href="#tutorials" className="text-gray-600 hover:text-blue-600">Tutorials</Link>
           <Link href="#practice" className="text-gray-600 hover:text-blue-600">Practice</Link>
           <Link href="/about" className="text-gray-600 hover:text-blue-600">About</Link>
-          {isUser ? <button onClick={handleLogout} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Logout</button> : <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Login</Link>}
+          {isUser ? (
+            <>
+              <Link href="/dashboard" className="text-gray-600 hover:text-blue-600">Dashboard</Link>
+              <button onClick={handleLogout} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Logout</button>
+            </>
+          ) : (
+            <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Login</Link>
+          )}
         </div>
       </nav>
     </header>
