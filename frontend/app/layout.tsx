@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Chatbot from "@/components/Chatbot";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,9 @@ export default function RootLayout({
         <Header />
         {children}
         <ToastContainer position="top-right" autoClose={5000} />
+      <div className="fixed bottom-2 right-4">
+        <Chatbot />
+      </div>
         <Footer />
       </body>
     </html>
