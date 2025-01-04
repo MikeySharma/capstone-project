@@ -44,7 +44,7 @@ export default function Register() {
   return (
     <AuthCard>
       <div className="max-w-md mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Sign Up</h1>
+        <h1 className="text-3xl font-bold text-black mb-2">Sign Up</h1>
         <p className="text-gray-600 mb-8">Create your account to get started</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,7 +52,7 @@ export default function Register() {
             <input
               type="text"
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg text-black border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="First Name"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
@@ -63,7 +63,7 @@ export default function Register() {
             <input
               type="email"
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg text-black border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Email address"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -74,7 +74,7 @@ export default function Register() {
             <input
               type={showPasswords.password ? "text" : "password"}
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg text-black border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -96,7 +96,7 @@ export default function Register() {
             <input
               type={showPasswords.confirmPassword ? "text" : "password"}
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg text-black border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
@@ -118,7 +118,7 @@ export default function Register() {
           <div>
             <input
               type="tel"
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg border text-black border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Phone Number (optional)"
               value={formData.phoneNumber}
               onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}

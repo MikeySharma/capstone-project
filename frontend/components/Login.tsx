@@ -41,7 +41,7 @@ export default function Login() {
   return (
     <AuthCard rightSide={false}>
       <div className="max-w-md mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+        <h1 className="text-3xl text-black font-bold mb-2">Welcome Back</h1>
         <p className="text-gray-600 mb-8">Sign in to continue your learning journey</p>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -49,7 +49,7 @@ export default function Login() {
             <input
               type="email"
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg text-black border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Email address"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -60,7 +60,7 @@ export default function Login() {
             <input
               type={showPassword ? "text" : "password"}
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-lg text-black border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}

@@ -28,12 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <link rel="icon" href="/favicon.ico" />
+      <head>
+        
+      <link rel="icon" href="/logo.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
       >
+        <Header />
         {children}
         <ToastContainer position="top-right" autoClose={5000} />
+        <Footer />
       </body>
     </html>
   );
