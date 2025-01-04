@@ -1,0 +1,4 @@
+*.zip
+*.csv
+.ipynb_checkpoints
+*.mp4
