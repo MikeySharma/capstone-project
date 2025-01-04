@@ -12,13 +12,13 @@ TIMESTEPS = 50
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
-        "origins": ["http://localhost:3000", "https://semicolon-flask.vercel.app"],
+        "origins": ["http://localhost:3000", "https://mithilacoders.vercel.app"],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
     }
 })
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "https://semicolon-flask.vercel.app"], async_mode='threading')
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "https://mithilacoders.vercel.app"], async_mode='threading')
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
