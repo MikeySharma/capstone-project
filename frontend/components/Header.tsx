@@ -29,6 +29,7 @@ export default function Header() {
   useEffect(() => {
     (async () => {
       const token = getCookie('token');
+      if(!token) return;
       const [isUserLoggedIn, user] = await Promise.all([
         isLoggedIn(token as string),
         userService.getProfile()
