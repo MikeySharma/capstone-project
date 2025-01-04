@@ -3,11 +3,10 @@ from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import cv2
 import numpy as np
-import base64
 import logging
-from PIL import Image
-import io
 from model import predict_hand_gesture
+
+TIMESTEPS = 50
 
 # Initialize Flask and SocketIO
 app = Flask(__name__)
