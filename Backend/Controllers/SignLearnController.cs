@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -77,73 +78,145 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetSign), new { word = sign.Word }, sign);
         }
 
-        // Update sign
-        [HttpPut("{word}")]
-        public async Task<IActionResult> UpdateSign(string word, [FromForm] SignLearnDto signDto)
-        {
-            var existingSign = await _context.SignLearns.FirstOrDefaultAsync(s => s.Word == word);
-            if (existingSign == null)
-                return NotFound();
-
-            if (signDto.Video != null)
-            {
-                // Delete old video if exists
-                if (!string.IsNullOrEmpty(existingSign.VideoName))
-                {
-                    string oldVideoPath = Path.Combine(_environment.WebRootPath, "videos", existingSign.VideoName);
-                    if (System.IO.File.Exists(oldVideoPath))
-                        System.IO.File.Delete(oldVideoPath);
-                }
-
-                // Save new video
-                string videoPath = Path.Combine(_environment.WebRootPath, "videos");
-                string uniqueFileName = $"{Guid.NewGuid()}_{signDto.Video.FileName}";
-                string filePath = Path.Combine(videoPath, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await signDto.Video.CopyToAsync(stream);
-                }
-
-                existingSign.VideoName = uniqueFileName;
-            }
-
-            existingSign.Word = signDto.Word;
-            existingSign.Description = signDto.Description;
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // Delete sign
-        [HttpDelete("{word}")]
-        public async Task<IActionResult> DeleteSign(string word)
-        {
-            var sign = await _context.SignLearns.FirstOrDefaultAsync(s => s.Word == word);
-            if (sign == null)
-                return NotFound();
-
-            // Delete video file if exists
-            if (!string.IsNullOrEmpty(sign.VideoName))
-            {
-                string videoPath = Path.Combine(_environment.WebRootPath, "videos", sign.VideoName);
-                if (System.IO.File.Exists(videoPath))
-                    System.IO.File.Delete(videoPath);
-            }
-
-            _context.SignLearns.Remove(sign);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // New endpoint to get all words
+        // Get all words
         [HttpGet("words")]
         public async Task<ActionResult<IEnumerable<string>>> GetAllWords()
         {
             return await _context.SignLearns
+                .OrderBy(s => s.Word)
                 .Select(s => s.Word)
                 .ToListAsync();
+        }
+
+        [HttpGet("progress")]
+        public async Task<ActionResult<WordProgressDto>> GetProgress()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var user = await _context.Users.FindAsync(Guid.Parse(userId));
+                if (user == null)
+                    return NotFound("User not found");
+
+                return new WordProgressDto
+                {
+                    CurrentWord = user.CurrentWord ?? "",
+                    CompletedWords = !string.IsNullOrEmpty(user.CompletedWords)
+                        ? user.CompletedWords.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                        : new List<string>()
+                };
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error getting progress: {ex.Message}");
+            }
+        }
+
+        [HttpPost("start")]
+        public async Task<ActionResult<WordProgressDto>> StartCourse()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var user = await _context.Users.FindAsync(Guid.Parse(userId));
+                if (user == null)
+                    return NotFound("User not found");
+
+                // Only start if not already started
+                if (!string.IsNullOrEmpty(user.CurrentWord))
+                {
+                    return Ok(new WordProgressDto
+                    {
+                        CurrentWord = user.CurrentWord,
+                        CompletedWords = !string.IsNullOrEmpty(user.CompletedWords)
+                            ? user.CompletedWords.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                            : new List<string>()
+                    });
+                }
+
+                var firstWord = await _context.SignLearns
+                    .OrderBy(s => s.Word)
+                    .Select(s => s.Word)
+                    .FirstOrDefaultAsync();
+
+                if (firstWord == null)
+                    return NotFound("No words available in the course");
+
+                user.CurrentWord = firstWord;
+                user.CompletedWords = "";
+                await _context.SaveChangesAsync();
+
+                return Ok(new WordProgressDto
+                {
+                    CurrentWord = firstWord,
+                    CompletedWords = new List<string>()
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error starting course: {ex.Message}");
+            }
+        }
+
+        [HttpPost("complete")]
+        public async Task<ActionResult<WordProgressDto>> CompleteWord([FromBody] CompleteWordDto dto)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(dto?.Word))
+                    return BadRequest("Word is required");
+
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                var user = await _context.Users.FindAsync(Guid.Parse(userId));
+                if (user == null)
+                    return NotFound("User not found");
+
+                // Validate current word
+                if (user.CurrentWord != dto.Word)
+                    return BadRequest("This is not your current word");
+
+                // Get completed words list
+                var completedWords = !string.IsNullOrEmpty(user.CompletedWords)
+                    ? new List<string>(user.CompletedWords.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    : new List<string>();
+
+                // Add current word to completed list if not already there
+                if (!completedWords.Contains(dto.Word))
+                {
+                    completedWords.Add(dto.Word);
+                    user.CompletedWords = string.Join(",", completedWords);
+                }
+
+                // Find next available word
+                var nextWord = await _context.SignLearns
+                    .Where(s => !completedWords.Contains(s.Word))
+                    .OrderBy(s => s.Word)
+                    .Select(s => s.Word)
+                    .FirstOrDefaultAsync();
+
+                user.CurrentWord = nextWord; // Will be null if no more words available
+                await _context.SaveChangesAsync();
+
+                return Ok(new WordProgressDto
+                {
+                    CurrentWord = nextWord ?? "",
+                    CompletedWords = completedWords,
+                    IsCompleted = nextWord == null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error completing word: {ex.Message}");
+            }
         }
     }
 } 
