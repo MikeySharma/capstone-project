@@ -14,7 +14,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative py-16">
+    <section className="relative py-16 mt-5">
       {/* Background Image with Gradient Overlay */}
       <div
         className="absolute inset-0 bg-center bg-cover bg-no-repeat"
@@ -37,12 +37,12 @@ export default function Hero() {
           <h1 className="text-4xl text-white md:text-5xl font-bold mb-4">
             Learn Sign Language, Connect Without Barriers
           </h1>
-          <p className="text-xl text-white mb-6">
+          <p className="text-sm text-white mb-6">
           SilentWords empowers connection through interactive sign language tutorials, video practice, and personalized learning, breaking communication barriers worldwide
           </p>
           <Link
             href="/login"
-            className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold text-lg hover:bg-blue-100 transition duration-300"
+            className="bg-white text-blu  e-600 px-6 py-3 rounded-full font-semibold text-lg hover:bg-blue-100 transition duration-300"
           >
             Start Learning Now
           </Link>

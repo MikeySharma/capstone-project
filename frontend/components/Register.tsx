@@ -43,7 +43,7 @@ export default function Register() {
 
   return (
     <AuthCard>
-      <div className="w-full max-w-sm mx-auto">
+      <div className="w-full max-w-sm mx-auto ">
         <h1 className="text-2xl sm:text-3xl font-bold text-black mb-2">Register</h1>
         <p className="text-gray-600 text-sm sm:text-base mb-6">Create your account to get started</p>
 

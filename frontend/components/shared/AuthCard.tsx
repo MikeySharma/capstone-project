@@ -5,7 +5,7 @@ interface AuthCardProps {
 
 export const AuthCard = ({ children, rightSide = true }: AuthCardProps) => {
   return (
-    <div className=" p-4 sm:p-8 lg:p-16 flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className=" p-4 sm:p-8 mt-5 lg:p-16 flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="w-full mt-10 max-w-3xl flex flex-col md:flex-row rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden relative">
         {/* Content Side */}
         <div 

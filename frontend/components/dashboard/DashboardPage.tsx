@@ -1,4 +1,3 @@
-
 export default function DashboardPage({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex">
@@ -47,8 +46,8 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
       </aside> */}
 
       {/* Main Content */}
-      <main className="flex-1   overflow-auto">
-        <div className="max-w-7xl mx-auto  rounded-2xl shadow-sm p-6">
+      <main className="flex-1 overflow-hidden">
+        <div className="max-w-7xl mx-auto rounded-2xl shadow-sm p-6">
           {children}
         </div>
       </main>

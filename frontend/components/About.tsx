@@ -29,7 +29,7 @@ export default function About() {
   }
 
   return (
-    <div className="min-h-screen bg-background/50 antialiased">
+    <div className="min-h-screen bg-background/50 antialiased overflow-hidden">
       {/* Hero Section - Updated typography */}
       <motion.section 
         className="relative h-[50vh] min-h-[400px] w-full overflow-hidden border-b border-border/40"

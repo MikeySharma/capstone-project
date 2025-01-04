@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-// import { useState } from 'react'
+import { Menu, X } from 'lucide-react' // Import icons for menu
 
 export default function Header() {
   const location = usePathname();
@@ -30,7 +30,7 @@ export default function Header() {
   useEffect(() => {
     (async () => {
       const token = getCookie('token');
-      if(!token) return;
+      if (!token) return;
       const [isUserLoggedIn, user] = await Promise.all([
         isLoggedIn(token as string),
         userService.getProfile()
@@ -38,8 +38,7 @@ export default function Header() {
       setUser(user);
       setIsUser(isUserLoggedIn);
     })()
-
-  }, [location])
+  }, [location]);
 
   const handleLogout = () => {
     deleteCookie('token');
@@ -48,66 +47,155 @@ export default function Header() {
     setIsUser(false);
     setUser(null);
     router.push('/login');
-  }
-  // console.log(handleLogout);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-sm shadow-md' : 'bg-white'
-      }`}>
+<>
+
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-gradient-to-r from-blue-600/95 via-indigo-600/95 to-purple-600/95 backdrop-blur-sm shadow-lg'
+          : 'bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500'
+      }`}
+    >
       <nav className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold flex items-center gap-4 text-blue-600">
-            <Image src="/logo.png" alt='logo' width={40} height={40} />
-            SilentWords
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link 
+            href="/" 
+            className="flex items-center gap-2 md:gap-4"
+            onClick={closeMenu}
+          >
+            <Image 
+              src="/logo.png" 
+              alt='logo' 
+              width={40} 
+              height={40} 
+              className="w-8 h-8 md:w-10 md:h-10 hover:scale-105 transition-transform" 
+            />
+            <span className='font-extrabold text-lg md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 hover:from-blue-200 hover:to-white transition-all duration-300'>
+              SilentWords
+            </span>
           </Link>
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2"
+            className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            {isMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
 
-          {/* Desktop Menu */}
-          <div className="hidden lg:flex space-x-4 items-center">
-            <Link href="/" className="text-gray-600 hover:text-blue-600">Tutorials</Link>
-            <Link href="/about" className="text-gray-600 hover:text-blue-600">About</Link>
-            <Link href="/features" className="text-gray-600 hover:text-blue-600">Features</Link>
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            <Link href="/" className="text-white hover:text-blue-100 transition-colors font-medium">
+              Tutorials
+            </Link>
+            <Link href="/about" className="text-white hover:text-blue-100 transition-colors font-medium">
+              About
+            </Link>
+            <Link href="/features" className="text-white hover:text-blue-100 transition-colors font-medium">
+              Features
+            </Link>
             {isUser ? (
-              <>
-                <Link href="/dashboard" className="text-gray-600 hover:text-blue-600">Dashboard</Link>
-                <Link href="#" className="text-gray-600 bg-green-500 text-md rounded-full py-2 px-3 hover:text-blue-600">{user && (user as any)?.fullName[0]}</Link>
-                <button onClick={handleLogout} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Logout</button>
-              </>
+              <div className="flex items-center space-x-4">
+                <Link 
+                  href="/dashboard" 
+                  className="text-white hover:text-blue-100 transition-colors font-medium"
+                >
+                  Dashboard
+                </Link>
+                <div className="flex items-center gap-3">
+                  <span className="text-white bg-green-500/80 px-3 py-1 rounded-full text-sm">
+                    {user && (user as any)?.fullName[0]}
+                  </span>
+                  <button 
+                    onClick={handleLogout}
+                    className="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
             ) : (
-              <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Login</Link>
+              <Link 
+                href="/login"
+                className="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+              >
+                Login
+              </Link>
             )}
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'} mt-4 space-y-2`}>
-          <Link href="#tutorials" className="block text-gray-600 hover:text-blue-600 py-2">Tutorials</Link>
-          <Link href="#practice" className="block text-gray-600 hover:text-blue-600 py-2">Practice</Link>
-          <Link href="/about" className="block text-gray-600 hover:text-blue-600 py-2">About</Link>
-          {isUser ? (
-            <>
-              <Link href="/dashboard" className="block text-gray-600 hover:text-blue-600 py-2">Dashboard</Link>
-              <button onClick={handleLogout} className="block w-full text-left bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Logout</button>
-            </>
-          ) : (
-            <Link href="/login" className="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Login</Link>
-          )}
-        </div>
+        {/* Mobile Navigation Menu */}
+        {isMenuOpen && (
+          <div className="lg:hidden mt-4 bg-white/10 backdrop-blur-md rounded-lg p-4 space-y-3">
+            <Link 
+              href="/" 
+              className="block text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors"
+              onClick={closeMenu}
+            >
+              Tutorials
+            </Link>
+            <Link 
+              href="/about" 
+              className="block text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors"
+              onClick={closeMenu}
+            >
+              About
+            </Link>
+            <Link 
+              href="/features" 
+              className="block text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors"
+              onClick={closeMenu}
+            >
+              Features
+            </Link>
+            {isUser ? (
+              <>
+                <Link 
+                  href="/dashboard" 
+                  className="block text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors"
+                  onClick={closeMenu}
+                >
+                  Dashboard
+                </Link>
+                <button 
+                  onClick={() => {
+                    handleLogout();
+                    closeMenu();
+                  }}
+                  className="w-full text-left text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link 
+                href="/login" 
+                className="block text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors"
+                onClick={closeMenu}
+              >
+                Login
+              </Link>
+            )}
+          </div>
+        )}
       </nav>
     </header>
-  )
+</>
+
+  );
 }
 
