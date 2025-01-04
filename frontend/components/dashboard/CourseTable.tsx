@@ -22,7 +22,15 @@ export default function CoursesTable() {
     const [isVideoLoading, setIsVideoLoading] = useState(true);
 
     useEffect(() => {
-        fetchWords();
+        const initializeData = async () => {
+            await fetchWords();
+            // If we have words in courseData, fetch details for the first word
+            if (courseData.length > 0) {
+                await fetchSingleWord(courseData[0]);
+            }
+        };
+        
+        initializeData();
     }, []);
 
     const fetchWords = async () => {
@@ -39,7 +47,7 @@ export default function CoursesTable() {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(response);
+            
             if (!response.ok) {
                 if (response.status === 401) {
                     router.push('/login');
@@ -49,8 +57,13 @@ export default function CoursesTable() {
             }
 
             const data = await response.json();
-            console.log(data);
-            setCourseData(Array.isArray(data) ? data : []);
+            const wordsArray = Array.isArray(data) ? data : [];
+            setCourseData(wordsArray);
+            
+            // If we have words, fetch the first word's details
+            if (wordsArray.length > 0) {
+                await fetchSingleWord(wordsArray[0]);
+            }
         } catch (error) {
             console.error("Error fetching words:", error);
             setCourseData([]);
@@ -116,7 +129,7 @@ export default function CoursesTable() {
                     />
                 </div>
                 <div >
-                    <Link href="/dashboard/practice-video">  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">Live Practice</button>  </Link>
+                    <Link href="/dashboard/practice-video">  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">Live translator</button>  </Link>
                 </div>
             </div>
 

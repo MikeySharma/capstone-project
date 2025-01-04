@@ -44,7 +44,7 @@ export default function Register() {
   return (
     <AuthCard>
       <div className="max-w-md mx-auto">
-        <h1 className="text-3xl font-bold text-black mb-2">Sign Up</h1>
+        <h1 className="text-3xl font-bold text-black mb-2">Register</h1>
         <p className="text-gray-600 mb-8">Create your account to get started</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -53,7 +53,7 @@ export default function Register() {
               type="text"
               required
               className="w-full px-4 py-3 rounded-lg text-black border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-              placeholder="First Name"
+              placeholder="Full Name"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
             />

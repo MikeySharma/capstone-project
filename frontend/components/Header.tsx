@@ -34,7 +34,7 @@ export default function Header() {
         <div className="flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold flex items-center gap-4 text-blue-600">
             <Image src="/logo.png" alt='logo' width={40} height={40} />
-            SilentWord
+            SilentWords
           </Link>
           
           {/* Mobile Menu Button */}
