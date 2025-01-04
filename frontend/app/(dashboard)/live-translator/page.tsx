@@ -26,6 +26,20 @@ export default function VideoStream() {
     });
     const [error, setError] = useState<string | null>(null);
     const [isStreaming, setIsStreaming] = useState<boolean>(false);
+    const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
+
+    const speak = (text: string) => {
+        if (isSoundOn && text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voices = speechSynthesis.getVoices();
+            console.log(voices)
+            const femaleVoice = voices.find(voice => voice.name.includes('Microsoft Zira - English'));
+            if (femaleVoice) {
+                utterance.voice = femaleVoice;
+            }
+            speechSynthesis.speak(utterance);
+        }
+    };
 
     useEffect(() => {
         if (!isStreaming) return;
@@ -50,6 +64,7 @@ export default function VideoStream() {
                     status: data.status || '',
                     frame_count: 0
                 });
+                speak(data.gesture); // Speak the predicted word
             }
         });
 
@@ -142,6 +157,8 @@ export default function VideoStream() {
         }
     };
 
+    const toggleSound = () => setIsSoundOn((prev) => !prev);
+
     return (
         <div className="flex flex-col items-center gap-4 p-4 mt-16">
             <h1 className="text-2xl font-semibold text-blue-600 mb-4">Real-Time Gesture Recognition with Live Video Streaming</h1>
@@ -163,33 +180,39 @@ export default function VideoStream() {
                             "flex items-center justify-center w-[28rem] object-fit bg-no-repeat  h-auto aspect-video rounded-md",
                             { 'hidden': isStreaming }
                         )}
-                        style={{backgroundImage: 'url(/sign-langauge/sign-background.png)'}}
+                        style={{ backgroundImage: 'url(/sign-langauge/sign-background.png)' }}
                     >
-                        <div className="text-gray-100 bg-blue-500 p-3 rounded-md">{!error ? 'Click On Play Button To Start.' : error }</div>
+                        <div className="text-gray-100 bg-blue-500 p-3 rounded-md">{!error ? 'Click On Play Button To Start.' : error}</div>
                     </section>
-                    <div className="flex justify-center mt-4">
+                    <div className="flex justify-center mt-4 gap-4">
                         {!isStreaming ? (
                             <button
                                 className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition"
                                 onClick={handlePlay}
                             >
-                                Play
+                                Stream: Play
                             </button>
                         ) : (
                             <button
                                 className="px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:bg-red-600 transition"
                                 onClick={handlePause}
                             >
-                                Pause
+                                Stream: Pause
                             </button>
                         )}
+                        <button
+                            className="px-4 py-2 bg-yellow-500 text-white rounded-md shadow-md hover:bg-yellow-600 transition"
+                            onClick={toggleSound}
+                        >
+                            {isSoundOn ? 'Sound: On' : 'Sound: Off'}
+                        </button>
                     </div>
                 </div>
-                <div className="w-1/2 min-w-[11rem]">
+                <div className="w-fit min-w-96">
                     {isCollecting > 0 && (
                         <div className="mb-4">
                             <p>Collecting gesture data...</p>
-                            <div className="w-full h-2 bg-gray-200 rounded-md overflow-hidden mt-2">
+                            <div className="w-full h-2 bg-gray-400 rounded-md overflow-hidden mt-2">
                                 <div
                                     className="h-full bg-blue-500 transition-width duration-300"
                                     style={{ width: `${(isCollecting / 50) * 100}%` }}
