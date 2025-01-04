@@ -1,4 +1,3 @@
-import About from "@/components/About";
 import Hero from "@/components/Hero";
 import PracticeSection from "@/components/PracticeSection";
 import TestimonialsSection from "@/components/Testimonials";
@@ -10,8 +9,8 @@ export default function Home() {
       <Hero />
       <TutorialSection />
       <PracticeSection />
+      
       <TestimonialsSection />
-      <About />
     </main>
   )
 }

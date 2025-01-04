@@ -1,10 +1,12 @@
-import LivePractice from '@/components/dashboard/LivePractice'
+import PracticeVideo from '@/components/practice-video/page'
+
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-      <LivePractice />
+      {/* <LivePractice /> */}
+    <PracticeVideo/>
     </div>
   )
 }

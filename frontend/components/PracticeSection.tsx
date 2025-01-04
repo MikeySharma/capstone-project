@@ -28,7 +28,7 @@ export default function PracticeSection() {
           </div>
           <div className="mt-8 md:mt-0">
             <Image
-              src="/placeholder.svg?height=400&width=600"
+              src="/ai.png"
               alt="Video interaction demonstration"
               width={600}
               height={400}

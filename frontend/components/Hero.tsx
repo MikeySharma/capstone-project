@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,11 +28,16 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative container mx-auto px-4 flex justify-between flex-col md:flex-row items-center">
-        <div className="md:w-1/2 mb-8 md:mb-0">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+        <motion.div 
+          className="md:w-1/2 mb-8 md:mb-0"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-4xl text-white md:text-5xl font-bold mb-4">
             Learn Sign Language, Connect Without Barriers
           </h1>
-          <p className="text-xl mb-6">
+          <p className="text-xl text-white mb-6">
             Interactive tutorials and video practice to master sign language at your pace.
           </p>
           <Link
@@ -40,13 +46,18 @@ export default function Hero() {
           >
             Start Learning Now
           </Link>
-        </div>
-        <div className=" flex justify-center  md:w-1/2">
+        </motion.div>
+        <motion.div 
+          className="flex justify-center md:w-1/2"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <video ref={videoRef} className='rounded-3xl shadow-2xl'  autoPlay loop muted width="300"  height={400}>
             <source src="/handsing.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
