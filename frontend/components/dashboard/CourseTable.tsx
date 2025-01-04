@@ -29,7 +29,7 @@ export default function CoursesTable() {
                 await fetchSingleWord(courseData[0]);
             }
         };
-        
+
         initializeData();
     }, []);
 
@@ -47,7 +47,7 @@ export default function CoursesTable() {
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (!response.ok) {
                 if (response.status === 401) {
                     router.push('/login');
@@ -59,7 +59,7 @@ export default function CoursesTable() {
             const data = await response.json();
             const wordsArray = Array.isArray(data) ? data : [];
             setCourseData(wordsArray);
-            
+
             // If we have words, fetch the first word's details
             if (wordsArray.length > 0) {
                 await fetchSingleWord(wordsArray[0]);
@@ -129,10 +129,8 @@ export default function CoursesTable() {
                     />
                 </div>
                 <div className="w-full sm:w-auto">
-                    <Link href="/dashboard/practice-video" className="block">  
-                        <button className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
-                            Live translator
-                        </button>  
+                    <Link href="/live-translator" className="w-full block sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                        Live translator
                     </Link>
                 </div>
             </div>
@@ -146,11 +144,10 @@ export default function CoursesTable() {
                         {filteredData.map((item, index) => (
                             <div
                                 key={index}
-                                className={`p-3 cursor-pointer transition-all duration-200 border-b last:border-b-0 ${
-                                    selectedWord?.word === item
+                                className={`p-3 cursor-pointer transition-all duration-200 border-b last:border-b-0 ${selectedWord?.word === item
                                         ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm'
                                         : 'hover:bg-blue-50/50'
-                                }`}
+                                    }`}
                                 onClick={() => fetchSingleWord(item)}
                             >
                                 <span>{item}</span>
