@@ -73,13 +73,13 @@ export default function FeaturesPage() {
           Features of SilentWords
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <div
               key={index}
               className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
-              <div className="relative w-full h-80">
+              <div className="relative w-full h-40">
                 <Image
                   src={feature.image}
                   alt={feature.title}
@@ -89,10 +89,10 @@ export default function FeaturesPage() {
                 />
               </div>
               <div className="p-6">
-                <h2 className="text-2xl font-semibold mb-2 text-gray-800">
+                <h2 className="text-md text-center font-semibold mb-2 text-gray-800">
                   {feature.title}
                 </h2>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-gray-600 text-justify  text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>

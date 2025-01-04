@@ -65,8 +65,9 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex space-x-4 items-center">
-            <Link href="#tutorials" className="text-gray-600 hover:text-blue-600">Tutorials</Link>
+            <Link href="/" className="text-gray-600 hover:text-blue-600">Tutorials</Link>
             <Link href="/about" className="text-gray-600 hover:text-blue-600">About</Link>
+            <Link href="/features" className="text-gray-600 hover:text-blue-600">Features</Link>
             {isUser ? (
               <>
                 <Link href="/dashboard" className="text-gray-600 hover:text-blue-600">Dashboard</Link>

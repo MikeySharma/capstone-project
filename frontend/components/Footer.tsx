@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap justify-between">
           <div className="w-full md:w-1/3 mb-6 md:mb-0">
-            <h3 className="text-xl font-bold mb-2">SilentWord</h3>
+            <h3 className="text-xl font-bold mb-2">SilentWords</h3>
             <p className="text-gray-400">Learn Sign Language, Connect Without Barriers</p>
           </div>
           <div className="w-full md:w-1/3 mb-6 md:mb-0">
@@ -43,7 +43,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center">
-          <p className="text-gray-400">&copy; 2025 SilentWord. All rights reserved.</p>
+          <p className="text-gray-400">&copy; 2025 SilentWords. All rights reserved.</p>
           <div className="mt-2 space-x-4">
             <Link href="#" className="text-gray-400 hover:text-white">Terms of Service</Link>
             <Link href="#" className="text-gray-400 hover:text-white">Privacy Policy</Link>

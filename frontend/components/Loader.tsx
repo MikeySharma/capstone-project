@@ -6,7 +6,7 @@ const Loader = () => {
             <div className="relative">
                 {/* Outer spinning ring */}
                 <div
-                    className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                    className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-green-400 border-t-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]  "
                     role="status">
                 </div>
                 {/* Inner pulsing circle */}

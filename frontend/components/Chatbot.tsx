@@ -57,7 +57,7 @@ const Chatbot: React.FC = () => {
                 <h2 className="text-lg font-bold">SW.ai</h2>
               </div>
             </div>
-            <span className="text-xl font-bold">{isOpen ? "−" : "+"}</span>
+            <span className="text-xl font-bold">{isOpen ? "x" : "+"}</span>
           </div>
 
           {/* Chatbot Body */}
