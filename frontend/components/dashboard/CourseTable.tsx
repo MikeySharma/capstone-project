@@ -115,7 +115,7 @@ export default function CoursesTable() {
     }
 
     return (
-        <div className="space-y-6 min-h-screen p-4 bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="space-y-6 min-h-screen p-4 ">
             {/* Search Section */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-white/20">
                 <div className="relative w-full sm:max-w-md">
@@ -138,67 +138,100 @@ export default function CoursesTable() {
             {/* Words List and Details */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Words Column */}
-                <div className="lg:col-span-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-4">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Words</h2>
-                    <div className="max-h-[40vh] lg:max-h-[90vh] overflow-y-auto rounded-lg bg-white/50">
+                <div className="lg:col-span-4 bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-white/30 p-6">
+                    <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
+                        <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">Words</span>
+                        <div className="flex-1 h-[1px] bg-gradient-to-r from-blue-200 to-purple-200"></div>
+                    </h2>
+                    <div className="max-h-[40vh] lg:max-h-[90vh] overflow-y-auto rounded-xl bg-white/70 shadow-inner">
                         {filteredData.map((item, index) => (
                             <div
                                 key={index}
-                                className={`p-3 cursor-pointer transition-all duration-200 border-b last:border-b-0 ${selectedWord?.word === item
-                                        ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm'
-                                        : 'hover:bg-blue-50/50'
-                                    }`}
+                                className={`p-4 cursor-pointer transition-all duration-300 border-b border-gray-100 last:border-b-0 flex items-center gap-3 group ${
+                                    selectedWord?.word === item
+                                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
+                                        : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50'
+                                }`}
                                 onClick={() => fetchSingleWord(item)}
                             >
-                                <span>{item}</span>
+                                <span className={`text-lg ${
+                                    selectedWord?.word === item 
+                                        ? 'text-white'
+                                        : 'text-gray-700 group-hover:text-blue-600'
+                                }`}>{item}</span>
+                                <div className={`ml-auto opacity-0 group-hover:opacity-100 transition-opacity ${
+                                    selectedWord?.word === item ? 'opacity-100' : ''
+                                }`}>
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* Word Details Column */}
-                <div className="lg:col-span-8 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-6">
+                <div className="lg:col-span-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-2xl border border-white/20 overflow-hidden">
                     {selectedWord ? (
-                        <div className="space-y-6">
-                            <div className="flex justify-between items-center pb-4 border-b">
-                                <h2 className="text-2xl font-semibold break-words bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                    {selectedWord.word}
-                                </h2>
-                                <button
-                                    onClick={() => {
-                                        const utterance = new SpeechSynthesisUtterance(selectedWord.word);
-                                        window.speechSynthesis.speak(utterance);
-                                    }}
-                                    className="p-2.5 rounded-full hover:bg-blue-50 transition-colors duration-200 flex-shrink-0"
-                                    title="Listen to pronunciation"
-                                >
-                                    🔊
-                                </button>
+                        <div>
+                            {/* Header Section */}
+                            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-3xl font-bold text-white">
+                                        {selectedWord.word}
+                                    </h2>
+                                    <button
+                                        onClick={() => {
+                                            const utterance = new SpeechSynthesisUtterance(selectedWord.word);
+                                            window.speechSynthesis.speak(utterance);
+                                        }}
+                                        className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 flex-shrink-0 text-white"
+                                        title="Listen to pronunciation"
+                                    >
+                                        🔊
+                                    </button>
+                                </div>
                             </div>
-                            <div className="bg-blue-50/50 rounded-lg p-4">
-                                <p className="text-gray-700 leading-relaxed">
-                                    <strong className="text-blue-700">Description:</strong> {selectedWord.description}
-                                </p>
-                            </div>
-                            <div className="space-y-3">
-                                <strong className="text-blue-700 block">Hand Sign Demonstration:</strong>
-                                {isVideoLoading && selectedWord && <Loader />}
-                                <div className="rounded-lg overflow-hidden shadow-lg">
-                                    <video
-                                        src={`https://semicolon.tryasp.net/videos/${selectedWord.videoName}`}
-                                        loop
-                                        muted
-                                        autoPlay
-                                        className={`mt-2 w-full rounded-lg ${isVideoLoading ? 'hidden' : ''}`}
-                                        onLoadStart={() => setIsVideoLoading(true)}
-                                        onLoadedData={() => setIsVideoLoading(false)}
-                                    />
+
+                            <div className="p-6 space-y-8">
+                                {/* Description Card */}
+                                <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 shadow-md">
+                                    <h3 className="text-lg font-semibold text-blue-800 mb-3">Description</h3>
+                                    <p className="text-gray-700 leading-relaxed">
+                                        {selectedWord.description}
+                                    </p>
+                                </div>
+
+                                {/* Video Section */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-blue-800 mb-4">Hand Sign Demonstration</h3>
+                                    {isVideoLoading && selectedWord && (
+                                        <div className="flex justify-center p-8">
+                                            <Loader />
+                                        </div>
+                                    )}
+                                    <div className="rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-blue-100 to-purple-100 p-1">
+                                        <video
+                                            src={`https://semicolon.tryasp.net/videos/${selectedWord.videoName}`}
+                                            loop
+                                            muted
+                                            autoPlay
+                                            className={`w-full rounded-lg ${isVideoLoading ? 'hidden' : ''}`}
+                                            onLoadStart={() => setIsVideoLoading(true)}
+                                            onLoadedData={() => setIsVideoLoading(false)}
+                                            style={{ aspectRatio: '16/9' }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center text-gray-500 py-10">
-                            <Loader />
+                        <div className="flex items-center justify-center h-96">
+                            <div className="text-center">
+                                <Loader />
+                                <p className="mt-4 text-gray-500">Loading word details...</p>
+                            </div>
                         </div>
                     )}
                 </div>
