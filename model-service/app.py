@@ -30,29 +30,34 @@ def handle_disconnect():
 @socketio.on('frame')
 def handle_frame(frame_data):
     try:
-        # Convert ArrayBuffer to numpy array
+        # Convert frame data
         frame_bytes = np.frombuffer(frame_data, dtype=np.uint8)
-        
-        # Decode the image
         img = cv2.imdecode(frame_bytes, cv2.IMREAD_COLOR)
         
         if img is None:
             raise ValueError("Failed to decode image")
 
-        # Process frame with the model
+        # Process frame and get prediction
         result = predict_hand_gesture(img)
-        logger.debug(f"Prediction result: {result}")
-
-        # Emit gesture data back to client
+        
+        # Log detailed information about the frame processing
+        logger.info(f"Frame processing result: Status={result['status']}, " 
+                   f"Frames={result['frame_count']}/{result['total_frames']}, "
+                   f"Gesture={result['gesture']}, "
+                   f"Confidence={result['confidence']:.2f}")
+        
+        # Emit result to client
         emit('gestureData', result)
 
     except Exception as e:
-        logger.error(f"Error processing frame: {str(e)}")
+        # logger.error(f"Error processing frame: {str(e)}")
         emit('gestureData', {
-            'gesture': 'No Gesture Detected',
+            'gesture': 'Error',
             'confidence': 0,
             'status': 'error',
-            'error': str(e)
+            'error': str(e),
+            'frame_count': 0,
+            'total_frames': TIMESTEPS
         })
 
 @app.route('/health')

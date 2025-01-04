@@ -9,15 +9,18 @@ interface GestureData {
     confidence: number;
     status: string;
     error?: string;
+    frame_count: number; // For collecting frames
 }
 
 export default function VideoStream() {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [socket, setSocket] = useState<Socket | null>(null);
+    const [isCollecting, setIsCollecting] = useState<number>(0);
     const [gestureData, setGestureData] = useState<GestureData>({
         gesture: '',
         confidence: 0,
-        status: ''
+        status: '',
+        frame_count: 0
     });
     const [error, setError] = useState<string | null>(null);
 
@@ -31,12 +34,18 @@ export default function VideoStream() {
         });
 
         socketInstance.on('gestureData', (data: GestureData) => {
+            if(data.status === 'collecting'){
+                setIsCollecting(data.frame_count);
+            }
             console.log('Received gesture data:', data);
-            setGestureData({
-                gesture: data.gesture || '',
-                confidence: data.confidence || 0,
-                status: data.status || ''
-            });
+            if(data.status === 'success'){
+                setGestureData({
+                    gesture: data.gesture || '',
+                    confidence: data.confidence || 0,
+                    status: data.status || '',
+                    frame_count: 0
+                });
+            }
         });
 
         socketInstance.on('connect_error', (err) => {
@@ -123,9 +132,33 @@ export default function VideoStream() {
                 }} 
             />
             <div className="gesture-info">
-                <h2>Detected Gesture: {gestureData.gesture}</h2>
-                {gestureData.confidence > 0 && (
-                    <p>Confidence: {(gestureData.confidence * 100).toFixed(1)}%</p>
+                {isCollecting > 0 && (
+                    <div className="collecting-status">
+                        <p>Collecting gesture data...</p>
+                        <div className="progress-bar">
+                            <div 
+                                className="progress" 
+                                style={{width: `${(isCollecting/50) * 100}%`}}
+                            ></div>
+                        </div>
+                        <p>{isCollecting}/50 frames</p>
+                    </div>
+                )}
+                {gestureData.gesture && (
+                    <>
+                        <h2 className={`gesture active`}>
+                            {gestureData.gesture}
+                        </h2>
+                        {gestureData.confidence > 0.5 && (
+                            <div className="confidence-meter">
+                                <div 
+                                    className="confidence-bar"
+                                    style={{width: `${gestureData.confidence * 100}%`}}
+                                ></div>
+                                <p>{(gestureData.confidence * 100).toFixed(1)}% confident</p>
+                            </div>
+                        )}
+                    </>
                 )}
                 {gestureData.status === 'error' && gestureData.error && (
                     <p className="error">{gestureData.error}</p>
@@ -141,20 +174,58 @@ export default function VideoStream() {
                 }
                 .gesture-info {
                     text-align: center;
-                    padding: 1rem;
-                    border-radius: 8px;
-                    background: #f5f5f5;
+                    padding: 1.5rem;
+                    border-radius: 12px;
+                    background: #f8f9fa;
                     min-width: 300px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                .collecting-status {
+                    margin: 1rem 0;
+                }
+                .progress-bar {
+                    width: 100%;
+                    height: 8px;
+                    background: #e9ecef;
+                    border-radius: 4px;
+                    overflow: hidden;
+                    margin: 0.5rem 0;
+                }
+                .progress {
+                    height: 100%;
+                    background: #007bff;
+                    transition: width 0.3s ease;
+                }
+                .gesture {
+                    font-size: 1.5rem;
+                    margin: 0;
+                    opacity: 0.7;
+                }
+                .gesture.active {
+                    opacity: 1;
+                    color: #007bff;
+                }
+                .confidence-meter {
+                    margin-top: 1rem;
+                    width: 100%;
+                }
+                .confidence-bar {
+                    height: 6px;
+                    background: #28a745;
+                    border-radius: 3px;
+                    margin-bottom: 0.5rem;
+                    transition: width 0.3s ease;
                 }
                 .error-message {
-                    color: red;
-                    padding: 0.5rem;
-                    border: 1px solid red;
-                    border-radius: 4px;
+                    color: #dc3545;
+                    padding: 0.75rem;
+                    border: 1px solid #dc3545;
+                    border-radius: 6px;
                     margin-bottom: 1rem;
+                    background: #fff;
                 }
                 .error {
-                    color: red;
+                    color: #dc3545;
                     margin-top: 0.5rem;
                 }
             `}</style>
