@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -28,7 +29,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative container mx-auto px-4 flex justify-between flex-col md:flex-row items-center">
-        <motion.div 
+        <motion.div
           className="md:w-1/2 mb-8 md:mb-0"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -38,7 +39,7 @@ export default function Hero() {
             Learn Sign Language, Connect Without Barriers
           </h1>
           <p className="text-sm text-white mb-6">
-          SilentWords empowers connection through interactive sign language tutorials, video practice, and personalized learning, breaking communication barriers worldwide
+            SilentWords empowers connection through interactive sign language tutorials, video practice, and personalized learning, breaking communication barriers worldwide
           </p>
           <Link
             href="/login"
@@ -47,16 +48,23 @@ export default function Hero() {
             Start Learning Now
           </Link>
         </motion.div>
-        <motion.div 
+        <div className='absolute -right-32   top-[20vh] flex justify-center items-center'>
+          <Image src="/strong.png" alt="handsignimage" width={500} height={500} />
+        </div>
+        <motion.div
           className="flex justify-center md:w-1/2"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <video ref={videoRef} className='rounded-3xl mt-10 shadow-2xl'  autoPlay loop muted width="300"  height={400}>
-            <source src="/handsing.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <div>
+
+            <video ref={videoRef} className='rounded-3xl mt-10 shadow-2xl' autoPlay loop muted width="300" height={400}>
+              <source src="/handsing.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div className=' absolute z-20 rounded-3xl mt-10 shadow-2xl bg-yellow-500 ml-10'>  </div>
+          </div>
         </motion.div>
       </div>
     </section>
