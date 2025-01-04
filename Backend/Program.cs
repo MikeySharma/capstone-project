@@ -72,8 +72,8 @@ builder.Services.AddCors(options =>
             builder
                 .WithOrigins(
                     "http://localhost:3000",     // Local development
-                    "https://hackpractice.tryasp.net"
-                )
+					"https://mithilacoders.vercel.app"
+				)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
