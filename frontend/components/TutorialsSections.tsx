@@ -12,7 +12,7 @@ const tutorials = [
 
 export default function TutorialsSection() {
   return (
-    <section id="tutorials" className="py-20 bg-[url('/90.jpg')] bg-no-repeat bg-cover bg-center min-h-screen w-full relative before:absolute before:inset-0 ">
+    <section id="tutorials" className=" container mx-auto p-20 bg-[url('/90.jpg')] bg-no-repeat bg-cover bg-center min-h-screen w-full relative before:absolute before:inset-0 ">
       <div className="container mx-auto  relative">
         <motion.h2 
           className="text-4xl md:text-5xl font-bold text-center mb-16   "

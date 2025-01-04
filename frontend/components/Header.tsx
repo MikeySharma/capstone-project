@@ -116,8 +116,9 @@ export default function Header() {
                   Dashboard
                 </Link>
                 <div className="flex items-center gap-3">
-                  <span className="text-white bg-green-500/80 px-3 py-1 rounded-full text-sm">
-                    {user && (user as any)?.fullName[0]}
+                  <span className="text-white flex items-center gap-2 bg-green-500/80 px-3 py-1 rounded-full text-sm">
+                  <Image src="/icons/profile.png" alt="user" width={20} height={20} />
+                    {user && (user as any)?.fullName}
                   </span>
                   <button 
                     onClick={handleLogout}

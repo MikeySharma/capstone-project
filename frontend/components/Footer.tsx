@@ -55,7 +55,7 @@ export default function Footer() {
               <span className="h-px w-8 bg-gradient-to-r from-blue-400 to-indigo-400"></span>
             </h4>
             <ul className="space-y-4">
-              {['Home', 'Tutorials', 'Practice', 'About'].map((item) => (
+              {['Home',  'About'].map((item) => (
                 <li key={item}>
                   <Link 
                     href={`/${item.toLowerCase()}`} 
