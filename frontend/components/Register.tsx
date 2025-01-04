@@ -33,7 +33,7 @@ export default function Register() {
     try {
       await authService.register(formData);
       toast.success('Registration successful! Please verify your email.');
-      router.push('/verify-email');
+      router.push(`/verify-email?email=${formData.email}`);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
