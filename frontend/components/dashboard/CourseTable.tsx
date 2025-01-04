@@ -115,37 +115,41 @@ export default function CoursesTable() {
     }
 
     return (
-        <div className="space-y-6 h-screen">
+        <div className="space-y-6 min-h-screen p-4 bg-gradient-to-br from-blue-50 via-white to-purple-50">
             {/* Search Section */}
-            <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
-                <div className="relative w-full max-w-md">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-white/20">
+                <div className="relative w-full sm:max-w-md">
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
                         placeholder="Search words..."
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/90"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div >
-                    <Link href="/dashboard/practice-video">  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">Live translator</button>  </Link>
+                <div className="w-full sm:w-auto">
+                    <Link href="/dashboard/practice-video" className="block">  
+                        <button className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                            Live translator
+                        </button>  
+                    </Link>
                 </div>
             </div>
 
             {/* Words List and Details */}
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Words Column */}
-                <div className="col-span-4 bg-white rounded-lg shadow-sm p-4">
-                    <h2 className="text-xl font-semibold mb-4">Words</h2>
-                    <div className="max-h-[60vh] overflow-y-auto border rounded-lg">
+                <div className="lg:col-span-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-4">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Words</h2>
+                    <div className="max-h-[40vh] lg:max-h-[60vh] overflow-y-auto rounded-lg bg-white/50">
                         {filteredData.map((item, index) => (
                             <div
                                 key={index}
-                                className={`p-3 cursor-pointer transition-colors border-b last:border-b-0 ${
+                                className={`p-3 cursor-pointer transition-all duration-200 border-b last:border-b-0 ${
                                     selectedWord?.word === item
-                                        ? 'bg-blue-50 text-blue-600'
-                                        : 'hover:bg-gray-50'
+                                        ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm'
+                                        : 'hover:bg-blue-50/50'
                                 }`}
                                 onClick={() => fetchSingleWord(item)}
                             >
@@ -156,38 +160,43 @@ export default function CoursesTable() {
                 </div>
 
                 {/* Word Details Column */}
-                <div className="col-span-8 bg-white rounded-lg shadow-sm p-4">
+                <div className="lg:col-span-8 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-6">
                     {selectedWord ? (
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-xl font-semibold">{selectedWord.word}</h2>
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-center pb-4 border-b">
+                                <h2 className="text-2xl font-semibold break-words bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                    {selectedWord.word}
+                                </h2>
                                 <button
                                     onClick={() => {
                                         const utterance = new SpeechSynthesisUtterance(selectedWord.word);
                                         window.speechSynthesis.speak(utterance);
                                     }}
-                                    className="p-2 rounded-full hover:bg-gray-100"
+                                    className="p-2.5 rounded-full hover:bg-blue-50 transition-colors duration-200 flex-shrink-0"
                                     title="Listen to pronunciation"
                                 >
                                     🔊
                                 </button>
                             </div>
-                            <p className="text-gray-700">
-                                <strong>Description:</strong> {selectedWord.description}
-                            </p>
-                            <div>
-                                <strong>Hand Sign Demonstration:</strong>
+                            <div className="bg-blue-50/50 rounded-lg p-4">
+                                <p className="text-gray-700 leading-relaxed">
+                                    <strong className="text-blue-700">Description:</strong> {selectedWord.description}
+                                </p>
+                            </div>
+                            <div className="space-y-3">
+                                <strong className="text-blue-700 block">Hand Sign Demonstration:</strong>
                                 {isVideoLoading && selectedWord && <Loader />}
-                                <video
-                                    src={`https://semicolon.tryasp.net/videos/${selectedWord.videoName}`}
-                                    // controls
-                                    loop
-                                    muted
-                                    autoPlay
-                                    className={`mt-2 w-full max-w-md rounded-lg ${isVideoLoading ? 'hidden' : ''}`}
-                                    onLoadStart={() => setIsVideoLoading(true)}
-                                    onLoadedData={() => setIsVideoLoading(false)}
-                                />
+                                <div className="rounded-lg overflow-hidden shadow-lg">
+                                    <video
+                                        src={`https://semicolon.tryasp.net/videos/${selectedWord.videoName}`}
+                                        loop
+                                        muted
+                                        autoPlay
+                                        className={`mt-2 w-full rounded-lg ${isVideoLoading ? 'hidden' : ''}`}
+                                        onLoadStart={() => setIsVideoLoading(true)}
+                                        onLoadedData={() => setIsVideoLoading(false)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     ) : (

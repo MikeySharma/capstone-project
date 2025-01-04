@@ -1,7 +1,7 @@
 
 export default function DashboardPage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen flex bg-teal-300">
       {/* Sidebar */}
       {/* <aside className="w-72 bg-white shadow-xl">
         <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600">
@@ -48,7 +48,7 @@ export default function DashboardPage({ children }: { children: React.ReactNode 
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">
-        <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-sm p-6">
+        <div className="max-w-7xl mx-auto bg-teal-200 rounded-2xl shadow-sm p-6">
           {children}
         </div>
       </main>

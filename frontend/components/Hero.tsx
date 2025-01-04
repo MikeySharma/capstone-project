@@ -53,7 +53,7 @@ export default function Hero() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <video ref={videoRef} className='rounded-3xl shadow-2xl'  autoPlay loop muted width="300"  height={400}>
+          <video ref={videoRef} className='rounded-3xl mt-10 shadow-2xl'  autoPlay loop muted width="300"  height={400}>
             <source src="/handsing.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
