@@ -24,15 +24,32 @@ export default function Login() {
     try {
       const response = await authService.login(formData);
       
-      Cookies.set('token', response.token, { secure: true, sameSite: 'strict' });
-      Cookies.set('user', JSON.stringify({
-        name: response.name,
-        email: response.email
-      }), { secure: true, sameSite: 'strict' });
-      toast.success('Login successful!');
-      router.push('/dashboard');
-    } catch (error: any) {
-      toast.error(error.message || 'Login failed');
+      if (response && response.token) {
+        Cookies.set('token', response.token, { 
+          secure: true, 
+          sameSite: 'strict',
+          expires: 7 // Set cookie to expire in 7 days
+        });
+
+        if (response.name && response.email) {
+          Cookies.set('user', JSON.stringify({
+            name: response.name,
+            email: response.email
+          }), { 
+            secure: true, 
+            sameSite: 'strict',
+            expires: 7
+          });
+        }
+
+        toast.success('Login successful!');
+        router.push('/dashboard');
+      } else {
+        throw new Error('Invalid login response');
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

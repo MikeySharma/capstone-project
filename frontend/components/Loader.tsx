@@ -15,7 +15,7 @@ const Loader = () => {
                 </div>
             </div>
             {/* Loading text */}
-            <p className="text-primary/70 text-sm font-medium animate-pulse">Loading...</p>
+            {/* <p className="text-primary/70 text-sm font-medium animate-pulse">Loading...</p>  */}
         </div>
     )
 }

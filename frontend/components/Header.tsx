@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 // import { useState } from 'react'
 
 export default function Header() {
@@ -43,8 +44,12 @@ export default function Header() {
   const handleLogout = () => {
     deleteCookie('token');
     deleteCookie('user');
+    toast.success('Logout successful!');
+    setIsUser(false);
+    setUser(null);
     router.push('/login');
   }
+  // console.log(handleLogout);
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-sm shadow-md' : 'bg-white'

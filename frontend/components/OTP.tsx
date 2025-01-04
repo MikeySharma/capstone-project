@@ -1,15 +1,16 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { authService } from '@/services/authService';
 import { toast } from 'react-toastify';
-import Cookies from 'js-cookie'
 import { AuthCard } from './shared/AuthCard';
 
 export default function OTP() {
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email');
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
+    email: email || '',
     otp: '',
   });
   const [loading, setLoading] = useState(false);
@@ -19,16 +20,9 @@ export default function OTP() {
     setLoading(true);
     
     try {
-      const response = await authService.verifyOtp(formData.email, formData.otp);
-      
-      Cookies.set('token', response.token, { secure: true, sameSite: 'strict' });
-      Cookies.set('user', JSON.stringify({
-        name: response.name,
-        email: response.email
-      }), { secure: true, sameSite: 'strict' });
-
+      await authService.verifyOtp(formData.email, formData.otp);
       toast.success('Email verified successfully!');
-      router.push('/dashboard');
+      router.push('/login');
     } catch (error: any) {
       toast.error(error.message || 'Verification failed');
     } finally {
@@ -48,6 +42,7 @@ export default function OTP() {
           <div>
             <input
               type="email"
+              disabled
               required
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               placeholder="Email address"

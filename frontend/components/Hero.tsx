@@ -38,7 +38,7 @@ export default function Hero() {
             Learn Sign Language, Connect Without Barriers
           </h1>
           <p className="text-xl text-white mb-6">
-            Interactive tutorials and video practice to master sign language at your pace.
+          SilentWords empowers connection through interactive sign language tutorials, video practice, and personalized learning, breaking communication barriers worldwide
           </p>
           <Link
             href="/login"
