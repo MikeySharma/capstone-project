@@ -1,6 +1,7 @@
 // 'use server'
-import { deleteCookie, getCookie } from '@/app/utils/cookieHandle';
+import { deleteCookie } from '@/app/utils/cookieHandle';
 import { API_BASE_URL } from '../config';
+import axios from 'axios';
 
 export interface RegisterData {
   fullName: string;
@@ -23,12 +24,12 @@ export const authService = {
       },
       body: JSON.stringify(data),
     });
-    
+
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message);
     }
-    
+
     return response.json();
   },
 
@@ -91,10 +92,23 @@ export const authService = {
   logout() {
     deleteCookie('token');
   }
-}; 
+};
 
-export const isLoggedIn = async () => {
-  const token = getCookie('token');
+export const isLoggedIn = async (token: string) => {
+  try {
 
-  return !!token;
+    const response = await fetch(`${API_BASE_URL}/api/Auth/validate-token`, { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+
 }
