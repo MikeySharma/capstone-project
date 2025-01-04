@@ -98,15 +98,15 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            <Link href="/" className="text-white hover:text-blue-100 transition-colors font-medium">
+            {/* <Link href="/" className="text-white hover:text-blue-100 transition-colors font-medium">
               Tutorials
-            </Link>
-            <Link href="/about" className="text-white hover:text-blue-100 transition-colors font-medium">
+            </Link> */}
+            {/* <Link href="/about" className="text-white hover:text-blue-100 transition-colors font-medium">
               About
-            </Link>
-            <Link href="/features" className="text-white hover:text-blue-100 transition-colors font-medium">
+            </Link> */}
+            {/* <Link href="/features" className="text-white hover:text-blue-100 transition-colors font-medium">
               Features
-            </Link>
+            </Link> */}
             {isUser ? (
               <div className="flex items-center space-x-4">
                 <Link 

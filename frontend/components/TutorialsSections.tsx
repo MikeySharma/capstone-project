@@ -12,10 +12,10 @@ const tutorials = [
 
 export default function TutorialsSection() {
   return (
-    <section id="tutorials" className="py-20 bg-[url('/950.jpg')] bg-no-repeat bg-cover bg-center min-h-screen w-full relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-600/60 before:via-indigo-600/40 before:to-purple-600/30">
-      <div className="container mx-auto px-4 relative">
+    <section id="tutorials" className="py-20 bg-[url('/90.jpg')] bg-no-repeat bg-cover bg-center min-h-screen w-full relative before:absolute before:inset-0 ">
+      <div className="container mx-auto  relative">
         <motion.h2 
-          className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-gray-100 to-green-100 bg-clip-text text-transparent"
+          className="text-4xl md:text-5xl font-bold text-center mb-16   "
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -46,7 +46,7 @@ export default function TutorialsSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               </div>
-              <div className="p-8 flex-1 bg-gradient-to-b from-white to-gray-50">
+              <div className="p-2 flex-1 bg-gradient-to-b from-white to-gray-50">
                 <h3 className="text-2xl font-bold mb-4 text-gray-800">{tutorial.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{tutorial.description}</p>
                 <button className="mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-md hover:shadow-lg">

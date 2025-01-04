@@ -29,10 +29,14 @@ export default function About() {
   }
 
   return (
-    <div className="min-h-screen bg-background/50 antialiased overflow-hidden">
-      {/* Hero Section - Updated typography */}
+    <div className="relative min-h-screen bg-background/50 antialiased">
+      {/* Subtle Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-white to-gray-50"></div>
+      <div className="absolute inset-0 bg-grid-black/[0.02] bg-[size:20px_20px]"></div>
+
+      {/* Hero Section - Enhanced */}
       <motion.section 
-        className="relative h-[50vh] min-h-[400px] w-full overflow-hidden border-b border-border/40"
+        className="relative h-[50vh] min-h-[400px] w-full overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -42,18 +46,19 @@ export default function About() {
           alt="Diverse group of people using sign language"
           width={1200}
           height={400}
-          className="object-cover w-full h-full brightness-90"
+          className="object-cover w-full h-full brightness-90 transform hover:scale-105 transition-transform duration-700"
           priority
         />
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80 flex items-center justify-center"
+          className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-black/80 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="text-center text-white space-y-8 p-6 max-w-3xl">
+          <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:20px_20px]"></div>
+          <div className="text-center text-white space-y-8 p-6 max-w-3xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <motion.h1 
-              className="text-4xl md:text-6xl font-bold tracking-tight font-display"
+              className="text-4xl md:text-6xl font-bold tracking-tight font-display drop-shadow-lg"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.7 }}
@@ -72,8 +77,8 @@ export default function About() {
         </motion.div>
       </motion.section>
 
-      <main className="container mx-auto px-4 py-24 space-y-40">
-        {/* Vision & Mission Section - Enhanced typography */}
+      <main className="relative container mx-auto px-4 py-24 space-y-40">
+        {/* Vision & Mission Section - Enhanced */}
         <div className="grid md:grid-cols-2 gap-12">
           <motion.section
             ref={visionRef}
@@ -82,15 +87,20 @@ export default function About() {
             variants={fadeInUp}
             transition={{ duration: 0.5 }}
           >
-            <Card className="h-full border-2 border-primary/10 hover:border-primary/20 transition-all">
+            <Card className="h-full bg-white/80 backdrop-blur-sm border-2 border-primary/10 
+                           hover:border-primary/20 transition-all duration-300 
+                           hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)]
+                           transform hover:-translate-y-1">
               <CardContent className="p-8 space-y-6">
-                <div className="flex items-center gap-3 pb-4 border-b border-border">
-                  <div className="p-2 rounded-md border border-primary/20 bg-primary/5">
-                    <Heart className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-3 pb-4 border-b border-border/50">
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5">
+                    <Heart className="h-6 w-6 text-primary animate-pulse" />
                   </div>
-                  <h2 className="text-2xl font-display font-semibold text-primary tracking-tight">Our Vision</h2>
+                  <h2 className="text-2xl font-display font-semibold text-primary tracking-tight">
+                    Our Vision
+                  </h2>
                 </div>
-                <p className="text-muted-foreground leading-relaxed font-light tracking-wide">
+                <p className="text-muted-foreground leading-relaxed font-light">
                   We envision a world where communication knows no barriers—where sign language 
                   is universally understood and appreciated. SilentWords stands as a bridge, 
                   connecting communities through the power of visual language, fostering 
@@ -126,7 +136,7 @@ export default function About() {
           </motion.section>
         </div>
 
-        {/* Problem Statement Section - Refined typography */}
+        {/* Problem Statement Section - Enhanced */}
         <motion.section
           ref={problemRef}
           initial="hidden"
@@ -171,7 +181,7 @@ export default function About() {
           </div>
         </motion.section>
 
-        {/* Target Audience Section - Updated typography */}
+        {/* Target Audience Section - Enhanced */}
         <motion.section
           ref={audienceRef}
           initial="hidden"
@@ -206,7 +216,7 @@ export default function About() {
           </div>
         </motion.section>
 
-        {/* Features Section - Enhanced typography */}
+        {/* Features Section - Enhanced */}
         <motion.section
           ref={featuresRef}
           initial="hidden"
@@ -266,7 +276,7 @@ export default function About() {
           </motion.div>
         </motion.section>
 
-        {/* Impact Section - Refined typography */}
+        {/* Impact Section - Enhanced */}
         <motion.section
           ref={solutionRef}
           initial="hidden"

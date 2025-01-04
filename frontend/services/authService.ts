@@ -56,7 +56,7 @@ export const authService = {
   },
 
   async forgotPassword(email: string) {
-    const response = await fetch(`${API_BASE_URL}/api/Auth/ForgotPassword`, {
+    const response = await fetch(`${API_BASE_URL}/api/Auth/forgot-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,24 @@ export const authService = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message);
+      throw new Error(error.message || 'Failed to process forgot password request');
+    }
+
+    return response.json();
+  },
+
+  async resetPassword(email: string, code: string, newPassword: string) {
+    const response = await fetch(`${API_BASE_URL}/api/Auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, code, newPassword }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to reset password');
     }
 
     return response.json();
@@ -83,7 +100,7 @@ export const authService = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message);
+      throw new Error(error.message || 'Failed to verify OTP');
     }
 
     return response.json();
