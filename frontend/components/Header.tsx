@@ -1,6 +1,7 @@
 "use client"
-import { deleteCookie } from '@/app/utils/cookieHandle'
+import { deleteCookie, getCookie } from '@/app/utils/cookieHandle'
 import { isLoggedIn } from '@/services/authService'
+import { userService } from '@/services/userService'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -13,6 +14,7 @@ export default function Header() {
 
   const [isUser, setIsUser] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -24,13 +26,18 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(()=>{
-    (async()=>{
-      const isUserLoggedIn =  await isLoggedIn();
+  useEffect(() => {
+    (async () => {
+      const token = getCookie('token');
+      const [isUserLoggedIn, user] = await Promise.all([
+        isLoggedIn(token as string),
+        userService.getProfile()
+      ]);
+      setUser(user);
       setIsUser(isUserLoggedIn);
     })()
 
-  },[location])
+  }, [location])
 
   const handleLogout = () => {
     deleteCookie('token');
@@ -39,18 +46,17 @@ export default function Header() {
   }
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white/80 backdrop-blur-sm shadow-md' : 'bg-white'
-    }`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-sm shadow-md' : 'bg-white'
+      }`}>
       <nav className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold flex items-center gap-4 text-blue-600">
             <Image src="/logo.png" alt='logo' width={40} height={40} />
             SilentWords
           </Link>
-          
+
           {/* Mobile Menu Button */}
-          <button 
+          <button
             className="lg:hidden p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
@@ -71,6 +77,7 @@ export default function Header() {
             {isUser ? (
               <>
                 <Link href="/dashboard" className="text-gray-600 hover:text-blue-600">Dashboard</Link>
+                <Link href="#" className="text-gray-600 bg-green-500 text-md rounded-full py-2 px-3 hover:text-blue-600">{user && (user as any)?.fullName[0]}</Link>
                 <button onClick={handleLogout} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Logout</button>
               </>
             ) : (
