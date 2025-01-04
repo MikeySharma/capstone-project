@@ -13,13 +13,13 @@ from model import predict_hand_gesture
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
-        "origins": ["http://localhost:3000", "https://hackpractice.tryasp.net"],
+        "origins": ["http://localhost:3000", "https://semicolon-flask.vercel.app"],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
     }
 })
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "https://hackpractice.tryasp.net"], async_mode='threading')
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "https://semicolon-flask.vercel.app"], async_mode='threading')
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
