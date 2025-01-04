@@ -34,15 +34,14 @@ except Exception as e:
     raise
 
 # Word classes mapping (same as notebook)
-# word_classes = np.array([
-#     'a', 'about', 'aim', 'all', 'and', 'audio', 'b', 'barrier', 'break', 'c', 'can',
-#     'communication', 'creative', 'd', 'detect', 'developed', 'e', 'f', 'g', 'h',
-#     'have', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'our', 'p', 'project', 'q', 'r', 's',
-#     'sign language', 'solution', 't', 'team', 'text', 'that', 'translate', 'u', 'v',
-#     'w', 'what', 'x', 'y', 'you', 'z'
-# ])
+word_classes = np.array([
+    'a', 'about', 'aim', 'all', 'and', 'audio', 'b', 'barrier', 'break', 'c', 'can',
+    'communication', 'creative', 'd', 'detect', 'developed', 'e', 'f', 'g', 'h',
+    'have', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'our', 'p', 'project', 'q', 'r', 's',
+    'sign language', 'solution', 't', 'team', 'text', 'that', 'translate', 'u', 'v',
+    'w', 'what', 'x', 'y', 'you', 'z'
+])
 
-word_classes = np.array(['aims', 'barrier', 'break', 'communication', 'our', 'project'])
 # Global variables for frame collection
 captured_landmarks = []
 recording = False
