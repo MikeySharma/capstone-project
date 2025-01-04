@@ -35,11 +35,11 @@ except Exception as e:
 
 # Word classes mapping (same as notebook)
 word_classes = np.array([
-    'a', 'about', 'aim', 'all', 'and', 'audio', 'b', 'barrier', 'break',
-    'c', 'can', 'communication', 'creative', 'd', 'detect', 'developed',
-    'e', 'f', 'g', 'h', 'have', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'our',
-    'p', 'project', 'q', 'r', 's', 'sign language', 'solution', 't', 'team',
-    'text', 'that', 'to', 'translate', 'u', 'v', 'w', 'what', 'x', 'y', 'you', 'z'
+    'a', 'about', 'aim', 'all', 'and', 'audio', 'b', 'barrier', 'break', 'c', 'can',
+    'communication', 'creative', 'd', 'detect', 'developed', 'e', 'f', 'g', 'h',
+    'have', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'our', 'p', 'project', 'q', 'r', 's',
+    'sign language', 'solution', 't', 'team', 'text', 'that', 'translate', 'u', 'v',
+    'w', 'what', 'x', 'y', 'you', 'z'
 ])
 
 # Global variables for frame collection
