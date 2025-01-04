@@ -45,7 +45,7 @@ const Chatbot: React.FC = () => {
         </button>
       ) : (
         // Chat Window
-        <div className="w-96 bg-white shadow-lg rounded-lg">
+        <div className="w-80 bg-white shadow-lg rounded-lg">
           {/* Chatbot Header */}
           <div
             className="flex items-center justify-between bg-blue-600 text-white p-2 rounded-t-lg cursor-pointer"

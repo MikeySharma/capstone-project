@@ -48,9 +48,6 @@ export default function Hero() {
             Start Learning Now
           </Link>
         </motion.div>
-        <div className='absolute -right-32   top-[20vh] flex justify-center items-center'>
-          <Image src="/strong.png" alt="handsignimage" width={500} height={500} />
-        </div>
         <motion.div
           className="flex justify-center md:w-1/2"
           initial={{ opacity: 0, x: 50 }}

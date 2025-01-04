@@ -40,7 +40,7 @@ export default function RootLayout({
         {children}
         <ToastContainer position="top-right" autoClose={5000} />
         <div className="fixed bottom-2 right-4">
-          <Chatbot />
+          {/* <Chatbot /> */}
         </div>
         <Footer />
       </body>
