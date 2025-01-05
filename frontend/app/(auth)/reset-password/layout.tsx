@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Verify Email - SilentWords',
-  description: 'Verify your email address',
+  title: 'Reset Password - SilentWords',
+  description: 'Reset Password Page',
 };
 
 export default function VerifyEmailLayout({
