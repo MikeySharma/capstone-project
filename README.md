@@ -147,13 +147,6 @@ If you’d like to contribute to SilentWords, feel free to fork this repository 
 4. Push to the branch: `git push origin feature-name`.
 5. Open a pull request.
 
-## 🧑‍🤝‍🧑 Team MithilaCoders
-
-- **Amardeep Soni** – Backend Developer
-- **Mikey Sharma** – AI Developer
-- **Satyam Sah** – Frontend Developer
-- **Shaym Sundar Yadav** – AI Developer
-- **Nandani Shah** – Dataset Building
 
 ## 🚀 Future Enhancements
 
